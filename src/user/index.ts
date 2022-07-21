@@ -29,7 +29,7 @@ export const getOwnTickets = async (uuid: string): Promise<Array<Ticket>> => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Infected-Auth": await Oauth.getToken()
+			"X-Phoenix-Auth": await Oauth.getToken()
 		},
 	});
 
@@ -45,7 +45,7 @@ export const getAuthenticatedUser = async () => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Infected-Auth": await Oauth.getToken()
+			"X-Phoenix-Auth": await Oauth.getToken()
 		}
 	})
 	if(result.status !== 200) {
@@ -60,7 +60,7 @@ export const getUser = async (uuid: string) => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Infected-Auth": await Oauth.getToken()
+			"X-Phoenix-Auth": await Oauth.getToken()
 		}
 	})
 	if(result.status !== 200) {

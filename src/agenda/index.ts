@@ -29,7 +29,7 @@ export const createAgendaEntry = async (title: string, description: string, even
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'X-Infected-Auth': await Oauth.getToken(),
+            'X-Phoenix-Auth': await Oauth.getToken(),
         },
         body: JSON.stringify({
             title,
@@ -46,7 +46,7 @@ export const deleteAgendaEntry = async (uuid: string) => {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
-            'X-Infected-Auth': await Oauth.getToken()
+            'X-Phoenix-Auth': await Oauth.getToken()
         }
     })
     return response.status === 200

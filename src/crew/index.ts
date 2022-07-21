@@ -50,7 +50,7 @@ export const getCrews = async (): Promise<Array<Crew & {positions: Array<BasicPo
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            "X-Infected-Auth": await Oauth.getToken(),
+            "X-Phoenix-Auth": await Oauth.getToken(),
         },
     });
 
@@ -66,7 +66,7 @@ export const getCrew = async (uuid: string): Promise<Crew & {positions: Array<Fu
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            "X-Infected-Auth": await Oauth.getToken(),
+            "X-Phoenix-Auth": await Oauth.getToken(),
         },
     });
 

@@ -19,6 +19,9 @@
     "prettify": "prettier **.ts --write",
     "commit": "cz"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@commitlint/cli": "^12.0.1",
     "@commitlint/config-conventional": "^12.0.1",

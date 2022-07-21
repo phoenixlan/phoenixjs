@@ -36,7 +36,7 @@ export const createStoreSession = async (data: Cart) => {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            "X-Infected-Auth": await Oauth.getToken(),
+            "X-Phoenix-Auth": await Oauth.getToken(),
         },
         body: JSON.stringify(data)
     });

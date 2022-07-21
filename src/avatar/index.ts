@@ -25,7 +25,7 @@ export const createAvatar = async (file: File, x: number, y: number, w: number, 
 	const result = await fetch(`${getApiServer()}/user/${uuid}/avatar`, {
 		method: 'POST',
 		headers: {
-			"X-Infected-Auth": await Oauth.getToken()
+			"X-Phoenix-Auth": await Oauth.getToken()
 		},
 		body: data,
 	});
@@ -39,7 +39,7 @@ export const deleteAvatar = async (uuid: string) => {
 	const result = await fetch(`${getApiServer()}/avatar/${uuid}`, {
 		method: 'DELETE',
 		headers: {
-			"X-Infected-Auth": await Oauth.getToken()
+			"X-Phoenix-Auth": await Oauth.getToken()
 		}
 	});
 

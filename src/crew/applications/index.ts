@@ -27,7 +27,7 @@ export const getAllApplications = async (): Promise<Array<Application>> => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            "X-Infected-Auth": await Oauth.getToken(),
+            "X-Phoenix-Auth": await Oauth.getToken(),
         },
     });
 
@@ -46,7 +46,7 @@ export const getApplication = async (uuid: string): Promise<Application> => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            "X-Infected-Auth": await Oauth.getToken(),
+            "X-Phoenix-Auth": await Oauth.getToken(),
         },
     });
 
@@ -65,7 +65,7 @@ export const getAllApplicationsByEvent = async (event: Event): Promise<Array<App
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            "X-Infected-Auth": await Oauth.getToken(),
+            "X-Phoenix-Auth": await Oauth.getToken(),
         },
     });
 
@@ -82,7 +82,7 @@ export const getUserApplications = async (): Promise<Array<Application>> => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            "X-Infected-Auth": await Oauth.getToken(),
+            "X-Phoenix-Auth": await Oauth.getToken(),
         },
     });
 
@@ -98,7 +98,7 @@ export const createApplication = async (crew_uuid, contents): Promise<Applicatio
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            "X-Infected-Auth": await Oauth.getToken(),
+            "X-Phoenix-Auth": await Oauth.getToken(),
         },
         body: JSON.stringify({
             crew_uuid,
@@ -124,7 +124,7 @@ export const answerApplication = async (uuid: string, answer: string, state: App
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
-            "X-Infected-Auth": await Oauth.getToken(),
+            "X-Phoenix-Auth": await Oauth.getToken(),
         },
         body: JSON.stringify({
             answer: answer,
