@@ -24,6 +24,15 @@ export interface User {
 	avatar?: Avatar
 }
 
+export interface BasicUser {
+	uuid: string;
+	username: string;
+	firstname: string;
+	lastname: string;
+	gender: string;
+	avatar: string;
+}
+
 export const getOwnTickets = async (uuid: string): Promise<Array<Ticket>> => {
 	const response = await fetch(`${getApiServer()}/user/${uuid}/tickets`, {
 		method: 'GET',
@@ -70,8 +79,43 @@ export const getUser = async (uuid: string) => {
 	return await result.json() as User;
 }
 
+
+export const searchUsers = async (query: string) => {
+	const result = await fetch(`${getApiServer()}/user/search?query=${encodeURIComponent(query)}`, {
+		method: 'GET',
+		headers: {
+			"X-Phoenix-Auth": await Oauth.getToken()
+		}
+	})
+	if(result.status !== 200) {
+		throw new AuthError("Unable to search");
+	}
+
+	return await result.json() as Array<User>;
+}
+
+// TODO add users
+export const getUsers = async () => {
+	const result = await fetch(`${getApiServer()}/user`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		}
+	})
+	if(result.status !== 200) {
+		throw new AuthError("Unable to get users");
+	}
+
+	return await result.json() as User[];
+}
+
 export const getAuthenticationUrl = (callback: string, clientId: string) => {
 	return `${getApiServer()}/static/login.html?redirect_uri=${encodeURIComponent(callback)}&client_id=${encodeURIComponent(clientId)}`
+}
+
+export const getFullName = (user: BasicUser) => {
+	return `${user.firstname} ${user.lastname}`
 }
 
 export { Oauth };

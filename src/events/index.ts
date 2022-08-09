@@ -1,5 +1,7 @@
 import {getApiServer} from "../meta";
 import {ApiGetError} from "../errors";
+import { Oauth } from "../user";
+import { Ticket } from "../ticket";
 
 export interface Event {
     booking_time: number;
@@ -70,4 +72,19 @@ export const getEventTicketTypes = async (uuid: string): Promise<Array<TicketTyp
     }
 
     return (await response.json()) as Array<TicketType>;
+};
+
+export const getEventTickets = async (uuid: string): Promise<Array<Ticket>> => {
+    const response = await fetch(`${getApiServer()}/event/${uuid}/ticket`, {
+        method: 'GET',
+        headers: {
+            "X-Phoenix-Auth": await Oauth.getToken(),
+        }
+    });
+
+    if (response.status !== 200) {
+        throw new ApiGetError("Unable to get the events tickets");
+    }
+
+    return (await response.json()) as Array<Ticket>;
 };
