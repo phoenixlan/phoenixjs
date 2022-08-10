@@ -7,7 +7,7 @@
 import {getApiServer} from "../../meta";
 import * as Oauth from "../../user/oauth";
 import {ApiPutError} from "../../errors";
-import {TicketType} from "../../events";
+import {TicketType} from "../../ticketType";
 
 export interface Cart {
     cart: Array<{

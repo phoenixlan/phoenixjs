@@ -1,6 +1,6 @@
 import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
-import {ApiPostError} from "../errors";
+import {ApiGetError, ApiPostError} from "../errors";
 
 export type AvatarState = 'AvatarState.accepted' | 'AvatarState.rejected' | 'AvatarState.uploaded';
 
@@ -47,3 +47,19 @@ export const deleteAvatar = async (uuid: string) => {
 		throw new ApiPostError("Failed to delete avatar");
 	}
 }
+
+export const getAvatar = async (uuid: string) => {
+	const result = await fetch(`${getApiServer()}/avatar/${uuid}`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		}
+	})
+	if(result.status !== 200) {
+		throw new ApiGetError("Unable to get avatar");
+	}
+
+	return await result.json() as Avatar;
+}
+

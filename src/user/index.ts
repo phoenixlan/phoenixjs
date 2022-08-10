@@ -6,34 +6,42 @@ import {ApiGetError, AuthError} from "../errors";
 import {BasicPosition} from "../crew";
 
 import {Avatar} from '../avatar';
-import {Ticket} from "../payment";
+import { BasicTicket } from "../ticket";
 
-export interface User {
+export interface BaseUser {
 	uuid: string;
 	username: string;
-	birthdate: string;
 	firstname: string;
 	lastname: string;
 	gender: string;
+	avatar_urls: {
+		sd: string;
+		hd: string;
+		thumb: string;
+	}
+}
+
+export type BasicUser = {
+} & BaseUser;
+
+export type BasicUserWithPositions = {
+	positions: Array<BasicPosition>;
+} & BasicUser;
+
+export type FullUser = {
+	birthdate: string;
 	phone: string;
 	address: string;
 	postal_code: string;
 	country_code: string;
 	tos_level: number;
 	positions: Array<BasicPosition>;
-	avatar?: Avatar
-}
+	avatar_uuid?: string;
+	owned_tickets: Array<BasicTicket>;
+} & BaseUser;
 
-export interface BasicUser {
-	uuid: string;
-	username: string;
-	firstname: string;
-	lastname: string;
-	gender: string;
-	avatar: string;
-}
 
-export const getOwnTickets = async (uuid: string): Promise<Array<Ticket>> => {
+export const getOwnTickets = async (uuid: string): Promise<Array<BasicTicket>> => {
 	const response = await fetch(`${getApiServer()}/user/${uuid}/tickets`, {
 		method: 'GET',
 		headers: {
@@ -46,7 +54,7 @@ export const getOwnTickets = async (uuid: string): Promise<Array<Ticket>> => {
 		throw new ApiGetError("Unable to get the user's tickets");
 	}
 
-	return (await response.json()) as Array<Ticket>;
+	return (await response.json()) as Array<BasicTicket>;
 };
 
 export const getAuthenticatedUser = async () => {
@@ -61,7 +69,7 @@ export const getAuthenticatedUser = async () => {
 		throw new AuthError("Unable to get authentication token");
 	}
 
-	return await result.json() as User;
+	return await result.json() as FullUser;
 }
 
 export const getUser = async (uuid: string) => {
@@ -76,7 +84,7 @@ export const getUser = async (uuid: string) => {
 		throw new AuthError("Unable to get authentication token");
 	}
 
-	return await result.json() as User;
+	return await result.json() as FullUser;
 }
 
 
@@ -91,7 +99,7 @@ export const searchUsers = async (query: string) => {
 		throw new AuthError("Unable to search");
 	}
 
-	return await result.json() as Array<User>;
+	return await result.json() as Array<BasicUser>;
 }
 
 // TODO add users
@@ -107,7 +115,7 @@ export const getUsers = async () => {
 		throw new AuthError("Unable to get users");
 	}
 
-	return await result.json() as User[];
+	return await result.json() as BasicUser[];
 }
 
 export const getAuthenticationUrl = (callback: string, clientId: string) => {

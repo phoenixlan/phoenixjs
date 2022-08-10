@@ -2,7 +2,7 @@ import * as Applications from './applications';
 import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
 import {ApiGetError} from "../errors";
-import {User} from "../user";
+import {BasicUser, BasicUserWithPositions} from "../user";
 
 export interface Team {
     uuid: string,
@@ -32,20 +32,24 @@ export type BasicPosition = {
 } & BasePosition
 
 export type FullPosition = {
-    users: Array<User>,
+    users: Array<BasicUserWithPositions>,
 } & BasePosition
 
-export interface Crew {
+export interface BaseCrew {
     uuid: string,
     name: string,
     description: string,
     active: boolean,
     is_applyable: boolean,
     hex_color: string,
-    teams: Array<Team>,
 }
 
-export const getCrews = async (): Promise<Array<Crew & {positions: Array<BasicPosition>}>> => {
+export type FullCrew = {
+    teams: Array<Team>,
+    positions: Array<FullPosition>
+} & BaseCrew
+
+export const getCrews = async (): Promise<Array<BaseCrew>> => {
     const response = await fetch(`${getApiServer()}/crew/`, {
         method: 'GET',
         headers: {
@@ -58,10 +62,10 @@ export const getCrews = async (): Promise<Array<Crew & {positions: Array<BasicPo
         throw new ApiGetError('Unable to get crews');
     }
 
-    return (await response.json()) as Array<Crew & {positions: Array<BasicPosition>}>;
+    return (await response.json()) as Array<BaseCrew>;
 };
 
-export const getCrew = async (uuid: string): Promise<Crew & {positions: Array<FullPosition>}> => {
+export const getCrew = async (uuid: string): Promise<FullCrew> => {
     const response = await fetch(`${getApiServer()}/crew/${uuid}`, {
         method: 'GET',
         headers: {
@@ -74,7 +78,7 @@ export const getCrew = async (uuid: string): Promise<Crew & {positions: Array<Fu
         throw new ApiGetError(`Unable to get crew: ${uuid}`);
     }
 
-    return (await response.json()) as Crew & {positions: Array<FullPosition>}
+    return (await response.json()) as FullCrew
 };
 
 export { Applications }

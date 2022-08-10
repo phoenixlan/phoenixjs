@@ -1,9 +1,18 @@
 import { ApiPostError } from "../errors";
 import { getApiServer } from "../meta";
 import { Oauth } from "../user";
+import { SimpleSeat } from '../row';
+import { TicketType } from "../ticketType";
 
-export interface Ticket {
-    uuid: string;
+export interface BasicTicket {
+    buyer_uuid: string,
+    created: number,
+    owner_uuid: string,
+    payment_uuid: string,
+    seat: null | SimpleSeat,
+    seater_uuid: string,
+    ticket_type: TicketType,
+    ticket_id: number
 }
 
 export const createTicket = async (recipient: string, ticketType: string) => {

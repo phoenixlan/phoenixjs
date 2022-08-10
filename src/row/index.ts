@@ -2,12 +2,20 @@ import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
 import {ApiGetError} from "../errors";
 
-interface Seat {
+export interface Entrance {
+    uuid: string;
+    name: string;
+}
+
+export interface BaseSeat {
     uuid: string;
     number: number;
     is_reserved: boolean;
-    row_uuid: string;
 }
+
+export type SimpleSeat = {
+    row_uuid: string;
+} & BaseSeat;
 
 export interface Row {
     uuid: string;
@@ -15,11 +23,29 @@ export interface Row {
     y: number;
     is_horizontal: boolean;
     seatmap_uuid: string;
-    entrance_uuid: string|null;
     ticket_type_uuid: string|null;
     row_number: number;
-    seats: Array<Seat>;
 }
+
+
+interface BaseRow {
+    uuid: string;
+    row_number: number;
+    x: number;
+    y: number;
+    is_horizontal: boolean;
+    seats: Array<SimpleSeat>;
+    ticket_type_uuid: string|null; //ticket typen som eventuelt er den eneste som kan seate der
+    seatmap_uuid: string;
+}
+
+type FullRow = {
+    entrance: Entrance;
+} & BaseRow;
+
+type SimpleRow = {
+    entrance_uuid: string|null;
+} & BaseRow;
 
 interface RowUpdatableFields {
     x: number;

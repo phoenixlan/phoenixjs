@@ -1,7 +1,8 @@
 import {getApiServer} from "../meta";
 import {ApiGetError} from "../errors";
 import { Oauth } from "../user";
-import { Ticket } from "../ticket";
+import { BasicTicket } from "../ticket";
+import { TicketType } from "../ticketType";
 
 export interface Event {
     booking_time: number;
@@ -20,14 +21,6 @@ export interface Event {
     uuid: string;
 }
 
-export interface TicketType {
-    uuid: string;
-    name: string;
-    price: number;
-    refundable: boolean;
-    seatable: boolean;
-    description: string | null;
-}
 
 export const getCurrentEvent = async (): Promise<Event> => {
     const response = await fetch(`${getApiServer()}/event/current`, {
@@ -74,7 +67,7 @@ export const getEventTicketTypes = async (uuid: string): Promise<Array<TicketTyp
     return (await response.json()) as Array<TicketType>;
 };
 
-export const getEventTickets = async (uuid: string): Promise<Array<Ticket>> => {
+export const getEventTickets = async (uuid: string): Promise<Array<BasicTicket>> => {
     const response = await fetch(`${getApiServer()}/event/${uuid}/ticket`, {
         method: 'GET',
         headers: {
@@ -86,5 +79,5 @@ export const getEventTickets = async (uuid: string): Promise<Array<Ticket>> => {
         throw new ApiGetError("Unable to get the events tickets");
     }
 
-    return (await response.json()) as Array<Ticket>;
+    return (await response.json()) as Array<BasicTicket>;
 };

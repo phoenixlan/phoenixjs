@@ -1,7 +1,8 @@
 import {getApiServer} from "../../meta";
-import {User} from "../../user";
+import {BasicUser} from "../../user";
 import * as Oauth from "../../user/oauth";
 import {ApiGetError, ApiPutError, ApiParameterError} from "../../errors";
+import { BaseCrew } from '../'
 import { Event } from "../../events"
 
 enum ApplicationState {
@@ -12,13 +13,13 @@ enum ApplicationState {
 
 export interface Application {
     uuid: string,
-    crew_uuid: string,
+    crew: BaseCrew,
     event_uuid: string,
-    user: User,
+    user: BasicUser,
     contents: string,
     created: number,
     /* this doesnt exist yet */
-    state: ApplicationState
+    state: string,
     answer?: string
 }
 

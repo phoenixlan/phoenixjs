@@ -6,7 +6,7 @@
 import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
 import {ApiGetError, ApiPostError} from "../errors";
-import {TicketType} from "../events";
+import { BasicTicket } from '../ticket';
 
 export * from './storeSession';
 
@@ -27,41 +27,7 @@ export interface PaymentInfo {
     store_session_uuid: string,
     user_uuid: string,
     uuid: string,
-    tickets: Array<Ticket>
-}
-
-interface Seat {
-    uuid: string;
-    number: number;
-    is_reserved: boolean;
-    row: SimpleRow;
-}
-
-interface SimpleRow {
-    uuid: string;
-    row_number: number;
-    x: number;
-    y: number;
-    is_horizontal: boolean;
-    ticket_type_uuid: string|null; //ticket typen som eventuelt er den eneste som kan seate der
-    seatmap_uuid: string;
-    entrance: Entrance;
-}
-
-interface Entrance {
-    uuid: string;
-    name: string;
-}
-
-export interface Ticket {
-    buyer_uuid: string,
-    created: number,
-    owner_uuid: string,
-    payment_uuid: string,
-    seat: null | Seat,
-    seater_uuid: string,
-    ticket_type: TicketType,
-    uuid: string,
+    tickets: Array<BasicTicket>
 }
 
 export const createPayment = async (store_session: string, provider: string) => {

@@ -2,13 +2,13 @@ import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
 import {ApiGetError} from "../errors";
 
-interface TicketType{
-    uuid: string,
-    name: string,
-    price: number,
-    refundable: boolean,
-    seatable: boolean,
-    description: string
+export interface TicketType {
+    uuid: string;
+    name: string;
+    price: number;
+    refundable: boolean;
+    seatable: boolean;
+    description: string | null;
 }
 
 export const getTicketTypes = async () => {
