@@ -37,6 +37,21 @@ export const getCurrentEvent = async (): Promise<Event> => {
     return (await response.json()) as Event;
 };
 
+export const getEvents = async (): Promise<Array<Event>> => {
+    const response = await fetch(`${getApiServer()}/event/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (response.status !== 200) {
+        throw new ApiGetError('Unable to get all events');
+    }
+
+    return (await response.json()) as Array<Event>;
+};
+
 export const getEvent = async (uuid: string): Promise<Event> => {
     const response = await fetch(`${getApiServer()}/event/${uuid}`, {
         method: 'GET',
