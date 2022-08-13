@@ -63,3 +63,49 @@ export const getAvatar = async (uuid: string) => {
 	return await result.json() as Avatar;
 }
 
+
+export const getAvatars = async () => {
+	const result = await fetch(`${getApiServer()}/avatar`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		}
+	})
+	if(result.status !== 200) {
+		throw new ApiGetError("Unable to get avatars");
+	}
+
+	return await result.json() as Array<Avatar>;
+}
+
+export const getPendingAvatars = async () => {
+	const result = await fetch(`${getApiServer()}/avatar/pending`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		}
+	})
+	if(result.status !== 200) {
+		throw new ApiGetError("Unable to get pending avatars");
+	}
+
+	return await result.json() as Array<Avatar>;
+}
+
+export const setApproved = async (uuid: string, state: boolean) => {
+	const result = await fetch(`${getApiServer()}/avatar/${uuid}`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		},
+		body: JSON.stringify({
+			new_state: state ? "accepted": "rejected"
+		})
+	})
+	if(result.status !== 200) {
+		throw new ApiGetError("Unable to set avatar approval status");
+	}
+}
