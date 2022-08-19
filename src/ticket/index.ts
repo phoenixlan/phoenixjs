@@ -9,6 +9,7 @@ export interface BasicTicket {
     created: number,
     owner_uuid: string,
     payment_uuid: string,
+    event_uuid: string,
     seat: null | SimpleSeat,
     seater_uuid: string,
     ticket_type: TicketType,
