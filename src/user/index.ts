@@ -6,7 +6,7 @@ import {ApiGetError, AuthError} from "../errors";
 import {BasicPosition} from "../crew";
 
 import {Avatar} from '../avatar';
-import { BasicTicket } from "../ticket";
+import { FullTicket } from "../ticket";
 
 export interface BaseUser {
 	uuid: string;
@@ -37,12 +37,11 @@ export type FullUser = {
 	tos_level: number;
 	positions: Array<BasicPosition>;
 	avatar_uuid?: string;
-	owned_tickets: Array<BasicTicket>;
 } & BaseUser;
 
 
-export const getOwnTickets = async (uuid: string): Promise<Array<BasicTicket>> => {
-	const response = await fetch(`${getApiServer()}/user/${uuid}/tickets`, {
+export const getOwnedTickets = async (uuid: string): Promise<Array<FullTicket>> => {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/owned_tickets`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -54,7 +53,39 @@ export const getOwnTickets = async (uuid: string): Promise<Array<BasicTicket>> =
 		throw new ApiGetError("Unable to get the user's tickets");
 	}
 
-	return (await response.json()) as Array<BasicTicket>;
+	return (await response.json()) as Array<FullTicket>;
+};
+
+export const getPurchasedTickets = async (uuid: string): Promise<Array<FullTicket>> => {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/purchased_tickets`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		},
+	});
+
+	if (response.status !== 200) {
+		throw new ApiGetError("Unable to get the user's tickets");
+	}
+
+	return (await response.json()) as Array<FullTicket>;
+};
+
+export const getSeatableTickets = async (uuid: string): Promise<Array<FullTicket>> => {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/seatable_tickets`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		},
+	});
+
+	if (response.status !== 200) {
+		throw new ApiGetError("Unable to get the user's tickets");
+	}
+
+	return (await response.json()) as Array<FullTicket>;
 };
 
 export const getAuthenticatedUser = async () => {
