@@ -12,11 +12,7 @@ export interface Event {
     max_participants: number;
     priority_seating_time_delta: number;
     seating_time_delta: number;
-    seatmap: {
-        background_mage: string;
-        event_uuid: string;
-        uuid: string;
-    };
+    seatmap_uuid: string;
     start_time: number;
     theme: null | string;
     uuid: string;

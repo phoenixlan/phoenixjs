@@ -2,16 +2,25 @@ import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
 import {ApiGetError} from "../errors";
 
-import { Row } from '../row';
+import { Row, AvailabilityRow } from '../row';
 
-interface Seatmap {
+interface SeatmapBase {
     uuid: string;
+    background: string|null;
+    width: number;
+    height: number;
+}
+
+export type Seatmap = {
     name: string;
     description: string;
-    background: string|null;
 //    events: Array<Event>;
     rows: Array<Row>;
-}
+} & SeatmapBase;
+
+export type SeatmapAvailability = {
+    rows: Array<AvailabilityRow>;
+} & SeatmapBase;
 
 export const createSeatmap = async (name: string, description: string) => {
     const response = await fetch(`${getApiServer()}/seatmap`, {
@@ -46,6 +55,22 @@ export const getSeatmap = async (uuid: string) => {
 
     return (await response.json()) as Seatmap;
 }
+
+export const getSeatmapAvailability = async (uuid: string) => {
+    const response = await fetch(`${getApiServer()}/seatmap/${uuid}/availability`, {
+        method: 'GET',
+        headers: {
+            "X-Phoenix-Auth": await Oauth.getToken(),
+        },
+    });
+
+    if (!response.ok) {
+        throw new ApiGetError('Unable to get seatmap availability');
+    }
+
+    return (await response.json()) as SeatmapAvailability;
+}
+
 export const getSeatmaps = async () => {
     const response = await fetch(`${getApiServer()}/seatmap/`, {
         method: 'GET',

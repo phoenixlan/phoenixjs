@@ -17,6 +17,10 @@ export type SimpleSeat = {
     row_uuid: string;
 } & BaseSeat;
 
+export type AvailabilitySeat = {
+    taken: boolean;
+} & BaseSeat;
+
 export interface Row {
     uuid: string;
     x: number;
@@ -34,17 +38,23 @@ interface BaseRow {
     x: number;
     y: number;
     is_horizontal: boolean;
-    seats: Array<SimpleSeat>;
     ticket_type_uuid: string|null; //ticket typen som eventuelt er den eneste som kan seate der
-    seatmap_uuid: string;
 }
+
+export type AvailabilityRow = {
+    seats: Array<AvailabilitySeat>;
+} & BaseRow;
 
 type FullRow = {
     entrance: Entrance;
+    seats: Array<SimpleSeat>;
+    seatmap_uuid: string;
 } & BaseRow;
 
 type SimpleRow = {
     entrance_uuid: string|null;
+    seats: Array<SimpleSeat>;
+    seatmap_uuid: string;
 } & BaseRow;
 
 interface RowUpdatableFields {
@@ -68,7 +78,7 @@ export const updateRow = async (uuid: string, options: RowUpdatableFields) => {
         throw new ApiGetError('Unable to create seatmap');
     }
 
-    return (await response.json()) as Row;
+    return (await response.json()) as SimpleRow;
 }
 
 export const addSeat = async (rowUuid: string) => {
