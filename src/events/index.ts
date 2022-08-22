@@ -6,6 +6,7 @@ import { TicketType } from "../ticketType";
 
 export interface Event {
     name: string;
+    age_limit_inclusive: number;
     booking_time: number;
     cancellation_reason: null | string;
     end_time: number;
