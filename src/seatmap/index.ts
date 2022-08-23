@@ -6,19 +6,25 @@ import { Row, AvailabilityRow } from '../row';
 
 interface SeatmapBase {
     uuid: string;
-    background: string|null;
     width: number;
     height: number;
+}
+
+interface SeatmapBackground {
+    uuid: string;
+    url: string;
 }
 
 export type Seatmap = {
     name: string;
     description: string;
+    background: SeatmapBackground|null;
 //    events: Array<Event>;
     rows: Array<Row>;
 } & SeatmapBase;
 
 export type SeatmapAvailability = {
+    background_url: string|null;
     rows: Array<AvailabilityRow>;
 } & SeatmapBase;
 
