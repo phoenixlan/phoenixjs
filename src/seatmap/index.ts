@@ -2,7 +2,7 @@ import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
 import {ApiGetError} from "../errors";
 
-import { Row, AvailabilityRow } from '../row';
+import { SimpleRow, AvailabilityRow } from '../row';
 
 interface SeatmapBase {
     uuid: string;
@@ -20,7 +20,7 @@ export type Seatmap = {
     description: string;
     background: SeatmapBackground|null;
 //    events: Array<Event>;
-    rows: Array<Row>;
+    rows: Array<SimpleRow>;
 } & SeatmapBase;
 
 export type SeatmapAvailability = {

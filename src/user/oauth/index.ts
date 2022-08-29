@@ -6,7 +6,7 @@ import {AuthError, RefreshError} from "../../errors";
 let TOKEN = "";
 let REFRESH_TOKEN = "";
 
-interface JWTPayload {
+export interface JWTPayload {
 	sub: string;
 	exp: number;
 	iat: number;

@@ -13,14 +13,26 @@ export interface BaseSeat {
     is_reserved: boolean;
 }
 
+
 export type SimpleSeat = {
     row_uuid: string;
 } & BaseSeat;
 
-export type AvailabilitySeat = {
-    taken: boolean;
+export type TicketSeat = {
+    row: {
+        'uuid': string;
+        'row_number': number;
+        'entrance': Entrance;
+    }
 } & BaseSeat;
 
+export type AvailabilitySeat = {
+    taken: boolean;
+    row: BaseRow;
+    ticket_id: number|null;
+} & BaseSeat;
+
+/*
 export interface Row {
     uuid: string;
     x: number;
@@ -29,8 +41,7 @@ export interface Row {
     seatmap_uuid: string;
     ticket_type_uuid: string|null;
     row_number: number;
-}
-
+}*/
 
 interface BaseRow {
     uuid: string;
@@ -45,13 +56,13 @@ export type AvailabilityRow = {
     seats: Array<AvailabilitySeat>;
 } & BaseRow;
 
-type FullRow = {
+export type FullRow = {
     entrance: Entrance;
     seats: Array<SimpleSeat>;
     seatmap_uuid: string;
 } & BaseRow;
 
-type SimpleRow = {
+export type SimpleRow = {
     entrance_uuid: string|null;
     seats: Array<SimpleSeat>;
     seatmap_uuid: string;
