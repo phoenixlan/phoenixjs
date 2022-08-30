@@ -25,6 +25,30 @@ export type FullTicket = {
     seater?: BasicUser,
 } & BaseTicket;
 
+export const setTicketSeater = async (ticket_id: number, userEmail: string | undefined) => {
+    const response = await fetch(`${getApiServer()}/ticket/${ticket_id}/seater`, {
+        method: 'PUT',
+        headers: {
+            "Content-Type": "application/json",
+            "X-Phoenix-Auth": await Oauth.getToken(),
+        },
+        body: JSON.stringify({
+            user_email: userEmail
+        })
+    });
+
+    if (!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json())['error']
+        } catch (e) {
+            throw new ApiPostError('Unable to set seater');
+        }
+
+        throw new ApiPutError(error);
+    }
+}
+
 export const seatTicket = async (ticket_id: number, seatUuid: string) => {
     const response = await fetch(`${getApiServer()}/ticket/${ticket_id}/seat`, {
         method: 'PUT',
