@@ -6,7 +6,7 @@
 
 import {getApiServer} from "../../meta";
 import * as Oauth from "../../user/oauth";
-import {ApiPutError} from "../../errors";
+import {ApiGetError, ApiPutError} from "../../errors";
 import {TicketType} from "../../ticketType";
 
 export interface Cart {
@@ -29,6 +29,21 @@ export interface StoreSession {
     total: number,
     user_uuid: string,
     uuid: string,
+}
+
+export const getActiveStoreSessions = async () => {
+    const response = await fetch(`${getApiServer()}/store_session/active`, {
+        method: 'GET',
+        headers: {
+            "X-Phoenix-Auth": await Oauth.getToken(),
+        },
+    });
+
+    if (!response.ok) {
+        throw new ApiGetError('Unable to get active store sessions');
+    }
+
+    return (await response.json()) as Array<StoreSession>;
 }
 
 export const createStoreSession = async (data: Cart) => {
