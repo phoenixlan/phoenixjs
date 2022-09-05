@@ -25,6 +25,30 @@ export type FullTicket = {
     seater?: BasicUser,
 } & BaseTicket;
 
+export const transferTicket = async (ticket_id: number, userEmail: string) => {
+    const response = await fetch(`${getApiServer()}/ticket/${ticket_id}/transfer`, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "X-Phoenix-Auth": await Oauth.getToken(),
+        },
+        body: JSON.stringify({
+            user_email: userEmail
+        })
+    });
+
+    if (!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json())['error']
+        } catch (e) {
+            throw new ApiPostError('Unable to transfer ticket');
+        }
+
+        throw new ApiPostError(error);
+    }
+}
+
 export const setTicketSeater = async (ticket_id: number, userEmail: string | undefined) => {
     const response = await fetch(`${getApiServer()}/ticket/${ticket_id}/seater`, {
         method: 'PUT',
@@ -42,7 +66,7 @@ export const setTicketSeater = async (ticket_id: number, userEmail: string | und
         try {
             error = (await response.json())['error']
         } catch (e) {
-            throw new ApiPostError('Unable to set seater');
+            throw new ApiPutError('Unable to set seater');
         }
 
         throw new ApiPutError(error);
