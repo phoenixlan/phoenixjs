@@ -6,7 +6,7 @@ import {ApiGetError, AuthError} from "../errors";
 import {BasicPosition} from "../crew";
 
 import {Avatar} from '../avatar';
-import { FullTicket } from "../ticket";
+import { FullTicket, FullTicketTransfer } from "../ticket";
 
 export interface BaseUser {
 	uuid: string;
@@ -72,6 +72,21 @@ export const getPurchasedTickets = async (uuid: string): Promise<Array<FullTicke
 	return (await response.json()) as Array<FullTicket>;
 };
 
+export const getTicketTransfers = async (uuid: string): Promise<Array<FullTicketTransfer>> => {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/ticket_transfers`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		},
+	});
+
+	if (response.status !== 200) {
+		throw new ApiGetError("Unable to get ticket transfers");
+	}
+
+	return (await response.json()) as Array<FullTicketTransfer>;
+};
 export const getSeatableTickets = async (uuid: string): Promise<Array<FullTicket>> => {
 	const response = await fetch(`${getApiServer()}/user/${uuid}/seatable_tickets`, {
 		method: 'GET',
@@ -82,7 +97,7 @@ export const getSeatableTickets = async (uuid: string): Promise<Array<FullTicket
 	});
 
 	if (response.status !== 200) {
-		throw new ApiGetError("Unable to get the user's tickets");
+		throw new ApiGetError("Unable to get seatable tickets");
 	}
 
 	return (await response.json()) as Array<FullTicket>;
