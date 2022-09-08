@@ -39,6 +39,7 @@ export interface BaseCrew {
     uuid: string,
     name: string,
     description: string,
+    application_prompt: string|null,
     active: boolean,
     is_applyable: boolean,
     hex_color: string,
