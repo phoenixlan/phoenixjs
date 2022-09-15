@@ -1,6 +1,6 @@
 {
   "name": "@phoenixlan/phoenix.js",
-  "version": "2.10.0",
+  "version": "2.11.0",
   "description": "Phoenix LAN api javascript wrapper",
   "main": "build/index.js",
   "module": "build/index.es.js",

@@ -133,6 +133,33 @@ export const getUser = async (uuid: string) => {
 	return await result.json() as FullUser;
 }
 
+export const getUserActivationState = async (uuid: string) => {
+	const result = await fetch(`${getApiServer()}/user/${uuid}/activation`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		}
+	})
+	if(result.status !== 200) {
+		throw new AuthError("Unable to get authentication token");
+	}
+
+	return (await result.json()).activated as boolean;
+}
+
+export const activateUser = async (uuid: string) => {
+	const result = await fetch(`${getApiServer()}/user/${uuid}/activation`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		}
+	})
+	if(result.status !== 200) {
+		throw new AuthError("Unable to get authentication token");
+	}
+}
 
 export const searchUsers = async (query: string) => {
 	const result = await fetch(`${getApiServer()}/user/search?query=${encodeURIComponent(query)}`, {
