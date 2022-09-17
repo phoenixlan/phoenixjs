@@ -1,6 +1,6 @@
 import {getApiServer} from "../meta";
 import {ApiGetError} from "../errors";
-import { Oauth } from "../user";
+import { BasicUserWithSecretFields, Oauth } from "../user";
 import { BasicTicket } from "../ticket";
 import { TicketType } from "../ticketType";
 
@@ -78,6 +78,22 @@ export const getEventTicketTypes = async (uuid: string): Promise<Array<TicketTyp
     }
 
     return (await response.json()) as Array<TicketType>;
+};
+
+
+export const getEventNewMembers = async (uuid: string): Promise<Array<BasicUserWithSecretFields>> => {
+    const response = await fetch(`${getApiServer()}/event/${uuid}/new_memberships`, {
+        method: 'GET',
+        headers: {
+            "X-Phoenix-Auth": await Oauth.getToken(),
+        }
+    });
+
+    if (response.status !== 200) {
+        throw new ApiGetError("Unable to get new memberships");
+    }
+
+    return (await response.json()) as Array<BasicUserWithSecretFields>;
 };
 
 export const getEventTickets = async (uuid: string): Promise<Array<BasicTicket>> => {

@@ -21,6 +21,14 @@ export interface BaseUser {
 	}
 }
 
+export type BasicUserWithSecretFields = {
+	birthdate: string;
+	email: string;
+	phone: string;
+	address: string;
+	postal_code: string;
+} & BaseUser;
+
 export type BasicUser = {
 } & BaseUser;
 
