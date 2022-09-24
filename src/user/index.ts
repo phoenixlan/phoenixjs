@@ -47,7 +47,6 @@ export type FullUser = {
 	avatar_uuid?: string;
 } & BaseUser;
 
-
 export const getOwnedTickets = async (uuid: string): Promise<Array<FullTicket>> => {
 	const response = await fetch(`${getApiServer()}/user/${uuid}/owned_tickets`, {
 		method: 'GET',
@@ -120,10 +119,25 @@ export const getAuthenticatedUser = async () => {
 		}
 	})
 	if(result.status !== 200) {
-		throw new AuthError("Unable to get authentication token");
+		throw new AuthError("Unable to get current user");
 	}
 
 	return await result.json() as FullUser;
+}
+
+export const getUserMembershipStatus = async (uuid: string, year?: number) => {
+	const result = await fetch(`${getApiServer()}/user/${uuid}/membership${year?'?year='+year:""}`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		}
+	})
+	if(result.status !== 200) {
+		throw new AuthError("Unable to get membership status");
+	}
+
+	return (await result.json()).is_member as boolean;
 }
 
 export const getUser = async (uuid: string) => {
@@ -135,7 +149,7 @@ export const getUser = async (uuid: string) => {
 		}
 	})
 	if(result.status !== 200) {
-		throw new AuthError("Unable to get authentication token");
+		throw new AuthError("Unable to get user");
 	}
 
 	return await result.json() as FullUser;
