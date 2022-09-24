@@ -9,6 +9,8 @@ export interface TicketType {
     refundable: boolean;
     seatable: boolean;
     description: string | null;
+    grants_membership: boolean;
+    requires_membership: boolean;
 }
 
 export const getTicketTypes = async () => {
