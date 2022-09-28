@@ -3,10 +3,10 @@ import * as Oauth from './oauth'
 
 import { getApiServer } from '../meta/api';
 import {ApiGetError, AuthError} from "../errors";
-import {BasicPosition} from "../crew";
 
 import {Avatar} from '../avatar';
 import { FullTicket, FullTicketTransfer } from "../ticket";
+import { BasicPosition } from '../position';
 
 export interface BaseUser {
 	uuid: string;
