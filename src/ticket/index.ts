@@ -8,6 +8,7 @@ interface BaseTicket {
     ticket_id: number;
     created: number;
     ticket_type: TicketType,
+    checked_in: number | null;
     seat: null | TicketSeat,
     event_uuid: string,
     payment_uuid: string,
@@ -85,6 +86,26 @@ export const revertTransfer = async (uuid: string) => {
     }
 }
 
+export const checkInTicket = async (ticket_id: number) => {
+    const response = await fetch(`${getApiServer()}/ticket/${ticket_id}/check_in`, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "X-Phoenix-Auth": await Oauth.getToken(),
+        }
+    });
+
+    if (!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json())['error']
+        } catch (e) {
+            throw new ApiPutError('Unable to check in ticket');
+        }
+
+        throw new ApiPutError(error);
+    }
+}
 export const setTicketSeater = async (ticket_id: number, userEmail: string | undefined) => {
     const response = await fetch(`${getApiServer()}/ticket/${ticket_id}/seater`, {
         method: 'PUT',
