@@ -7,6 +7,7 @@ import {ApiGetError, AuthError} from "../errors";
 import {Avatar} from '../avatar';
 import { FullTicket, FullTicketTransfer } from "../ticket";
 import { BasicPosition } from '../position';
+import { PositionFacingPositionMapping } from '../position_mapping';
 
 export interface BaseUser {
 	uuid: string;
@@ -32,8 +33,8 @@ export type BasicUserWithSecretFields = {
 export type BasicUser = {
 } & BaseUser;
 
-export type BasicUserWithPositions = {
-	positions: Array<BasicPosition>;
+export type BasicUserWithPositionMappings = {
+	position_mappings: Array<PositionFacingPositionMapping>;
 } & BasicUser;
 
 export type FullUser = {
@@ -43,7 +44,7 @@ export type FullUser = {
 	postal_code: string;
 	country_code: string;
 	tos_level: number;
-	positions: Array<BasicPosition>;
+	position_mappings: Array<PositionFacingPositionMapping>;
 	avatar_uuid?: string;
 } & BaseUser;
 

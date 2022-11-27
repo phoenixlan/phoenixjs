@@ -1,7 +1,7 @@
 import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
 import {ApiGetError} from "../errors";
-import { BasicUserWithPositions } from "../user";
+import { SimplePositionMapping, UserFacingPositionMapping } from "../position_mapping";
 
 export interface BasePosition {
     uuid: string,
@@ -20,11 +20,11 @@ export interface Permission {
 }
 
 export type BasicPosition = {
-    users: Array<string>,
+    position_mappings: Array<SimplePositionMapping>,
 } & BasePosition
 
 export type FullPosition = {
-    users: Array<BasicUserWithPositions>,
+    position_mappings: Array<UserFacingPositionMapping>,
 } & BasePosition
 
 export const getPosition = async (uuid: string) => {
