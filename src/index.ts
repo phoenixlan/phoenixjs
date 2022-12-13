@@ -6,6 +6,7 @@ export * from './errors';
 export * as Avatar from './avatar';
 export * from './tos';
 export * as Position from './position';
+export * as PositionMapping from './position_mapping';
 export * as Seatmap from './seatmap';
 export * as Entrance from './entrance';
 export * as TicketType from './ticketType';
