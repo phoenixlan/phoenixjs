@@ -24,6 +24,21 @@ export const getAgenda = async (): Promise<Array<AgendaEntry>> => {
     return (await response.json()) as Array<AgendaEntry>;
 };
 
+export const getAgendaElement = async (uuid: string): Promise<AgendaEntry> => {
+    const response = await fetch(`${getApiServer()}/agenda/${uuid}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (response.status !== 200) {
+        throw new ApiGetError('Unable to get agenda element');
+    }
+
+    return (await response.json()) as AgendaEntry;
+};
+
 export const createAgendaEntry = async (title: string, description: string, event_uuid: string, time: number) => {
     const response = await fetch(`${getApiServer()}/agenda`, {
         method: 'PUT',
