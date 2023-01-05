@@ -49,6 +49,7 @@ export type FullUser = {
 
 export interface DiscordMapping {
 	discord_id: string;
+	username: string;
 }
 
 interface DiscordMappingCreationInformation {
