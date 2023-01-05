@@ -48,6 +48,15 @@ export type FullUser = {
 	avatar_uuid?: string;
 } & BaseUser;
 
+export interface DiscordMapping {
+	discord_id: string;
+	username: string;
+}
+
+interface DiscordMappingCreationInformation {
+	url: string;
+}
+
 export const getOwnedTickets = async (uuid: string): Promise<Array<FullTicket>> => {
 	const response = await fetch(`${getApiServer()}/user/${uuid}/owned_tickets`, {
 		method: 'GET',
@@ -212,6 +221,58 @@ export const getUsers = async () => {
 	}
 
 	return await result.json() as BasicUser[];
+}
+
+export const createDiscordMappingOauthUrl = async (uuid: string) => {
+	const result = await fetch(`${getApiServer()}/user/${uuid}/discord_mapping`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		}
+	})
+	if(!result.ok) {
+		try {
+			throw new ApiGetError((await result.json())['error']);
+		} catch (e) {
+			throw new ApiGetError("Unable to create discord mapping");
+		}
+	}
+
+	return await result.json() as DiscordMappingCreationInformation;
+}
+
+export const revokeDiscordMapping = async (uuid: string) => {
+	const result = await fetch(`${getApiServer()}/user/${uuid}/discord_mapping`, {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		}
+	})
+
+	if(!result.ok) {
+		throw new ApiGetError("Unable to revoke Discord mapping");
+	}
+}
+
+export const getDiscordMapping = async (uuid: string) => {
+	const result = await fetch(`${getApiServer()}/user/${uuid}/discord_mapping`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		}
+	})
+	if(result.status === 404) {
+		return null;
+	}
+
+	if(!result.ok) {
+		throw new ApiGetError("Unable to get discord mapping");
+	}
+
+	return await result.json() as DiscordMapping;
 }
 
 export const getAuthenticationUrl = (callback: string, clientId: string) => {
