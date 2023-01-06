@@ -11,10 +11,19 @@ enum ApplicationState {
     rejected = 3
 }
 
+export interface ApplicationCrewMapping {
+    uuid: string;
+    application_uuid: string;
+    list_order: number;
+    crew: BaseCrew;
+    created: number;
+    accepted: boolean;
+}
+
 export interface Application {
     uuid: string,
-    crew: BaseCrew,
-    event_uuid: string,
+    crews: Array<ApplicationCrewMapping>,
+    event: Event,
     user: BasicUser,
     contents: string,
     created: number,
@@ -94,7 +103,7 @@ export const getUserApplications = async (): Promise<Array<Application>> => {
     return (await response.json()) as Array<Application>;
 };
 
-export const createApplication = async (crew_uuid, contents): Promise<Application> => {
+export const createApplication = async (crews: Array<string>, contents: string): Promise<Application> => {
     const response = await fetch(`${getApiServer()}/application`, {
         method: 'PUT',
         headers: {
@@ -102,7 +111,7 @@ export const createApplication = async (crew_uuid, contents): Promise<Applicatio
             "X-Phoenix-Auth": await Oauth.getToken(),
         },
         body: JSON.stringify({
-            crew_uuid,
+            crews,
             contents,
         })
     })
@@ -114,12 +123,15 @@ export const createApplication = async (crew_uuid, contents): Promise<Applicatio
     return (await response.json()) as Application;
 }
 
-export const answerApplication = async (uuid: string, answer: string, state: ApplicationState.accepted|ApplicationState.rejected): Promise<void> => {
+export const answerApplication = async (uuid: string, crew_uuid: string, answer: string, state: ApplicationState.accepted|ApplicationState.rejected): Promise<void> => {
     if (!uuid) {
         throw new ApiParameterError('uuid cannot be null');
     }
     if(!answer) {
         throw new ApiParameterError('Answer cannot be null')
+    }
+    if(!crew_uuid && state == ApplicationState.accepted) {
+        throw new ApiParameterError('Selected crew cannot be null')
     }
     const response = await fetch(`${getApiServer()}/application/${uuid}`, {
         method: 'PATCH',
@@ -128,7 +140,8 @@ export const answerApplication = async (uuid: string, answer: string, state: App
             "X-Phoenix-Auth": await Oauth.getToken(),
         },
         body: JSON.stringify({
-            answer: answer,
+            answer,
+            crew_uuid,
             state: state === ApplicationState.accepted ? "accepted" : "rejected"
         })
     });
