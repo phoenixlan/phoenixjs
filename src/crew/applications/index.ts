@@ -116,8 +116,14 @@ export const createApplication = async (crews: Array<string>, contents: string):
         })
     })
 
-    if(response.status !== 200) {
-        throw new ApiPutError('Unable to create application');
+    if(!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json() as { error: string }).error;
+        } catch (e) {
+            throw new ApiPutError('Unable to create application: ' + e);
+        }
+        throw new ApiPutError(error);
     }
 
     return (await response.json()) as Application;
