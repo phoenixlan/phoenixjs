@@ -9,6 +9,12 @@ import { FullTicket, FullTicketTransfer } from "../ticket";
 import { BasicPosition } from '../position';
 import { PositionFacingPositionMapping } from '../position_mapping';
 
+interface UserConsent {
+	consent_type: string;
+	source: string;
+	created: number;
+}
+
 export interface BaseUser {
 	uuid: string;
 	username: string;
@@ -46,6 +52,8 @@ export type FullUser = {
 	tos_level: number;
 	position_mappings: Array<PositionFacingPositionMapping>;
 	avatar_uuid?: string;
+
+	consents: Array<UserConsent>;
 } & BaseUser;
 
 export interface DiscordMapping {
