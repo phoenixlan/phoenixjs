@@ -113,8 +113,8 @@ export const getTicketTransfers = async (uuid: string): Promise<Array<FullTicket
 
 	return (await response.json()) as Array<FullTicketTransfer>;
 };
-export const getSeatableTickets = async (uuid: string): Promise<Array<FullTicket>> => {
-	const response = await fetch(`${getApiServer()}/user/${uuid}/seatable_tickets`, {
+export const getSeatableTickets = async (uuid: string, event_uuid?: string): Promise<Array<FullTicket>> => {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/seatable_tickets${event_uuid?"?event_uuid=" + event_uuid:''}`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',

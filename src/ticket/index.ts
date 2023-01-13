@@ -1,7 +1,8 @@
-import { ApiPostError, ApiPutError } from "../errors";
+import { ApiGetError, ApiPostError, ApiPutError } from "../errors";
 import { getApiServer } from "../meta";
 import { BasicUser, Oauth } from "../user";
 import { SimpleSeat, TicketSeat } from '../row';
+import { Event } from '../events';
 import { TicketType } from "../ticketType";
 
 interface BaseTicket {
@@ -10,8 +11,8 @@ interface BaseTicket {
     ticket_type: TicketType,
     checked_in: number | null;
     seat: null | TicketSeat,
-    event_uuid: string,
     payment_uuid: string,
+    event: Event,
 }
 
 export type BasicTicket = {
@@ -39,6 +40,28 @@ export type FullTicketTransfer = {
     to_user: BasicUser;
     ticket: FullTicket;
 } & BaseTicketTransfer;
+
+export const getTicket = async (ticket_id: number): Promise<FullTicket> => {
+    const response = await fetch(`${getApiServer()}/ticket/${ticket_id}`, {
+        method: 'GET',
+        headers: {
+            "Content-Type": "application/json",
+            "X-Phoenix-Auth": await Oauth.getToken(),
+        }
+    });
+
+    if (!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json())['error']
+        } catch (e) {
+            throw new ApiGetError('Unable to get ticket');
+        }
+
+        throw new ApiGetError(error);
+    }
+    return await response.json() as FullTicket
+}
 
 export const transferTicket = async (ticket_id: number, userEmail: string) => {
     const response = await fetch(`${getApiServer()}/ticket/${ticket_id}/transfer`, {
