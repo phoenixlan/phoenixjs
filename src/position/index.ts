@@ -1,6 +1,6 @@
 import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
-import {ApiGetError} from "../errors";
+import {ApiGetError, ApiPostError} from "../errors";
 import { SimplePositionMapping, UserFacingPositionMapping } from "../position_mapping";
 
 export interface BasePosition {
@@ -55,4 +55,32 @@ export const getPositions = async () => {
     }
 
     return (await response.json()) as Array<BasicPosition>;
+}
+
+export const createPosition = async (name: string, description: string, crew_uuid?: string, team_uuid?: string) => {
+    const response = await fetch(`${getApiServer()}/position/`, {
+        method: 'POST',
+        headers: {
+            "X-Phoenix-Auth": await Oauth.getToken(),
+        },
+        body: JSON.stringify({
+            name,
+            description,
+            crew_uuid,
+            team_uuid
+        })
+    });
+
+    if (!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json())['error']
+        } catch (e) {
+            throw new ApiPostError('Unable to create position');
+        }
+
+        throw new ApiPostError(error);
+    }
+
+    return (await response.json()) as FullPosition;
 }
