@@ -284,6 +284,16 @@ export const getDiscordMapping = async (uuid: string) => {
 	return await result.json() as DiscordMapping;
 }
 
+export const getCrewCard = async (uuid: string) => {
+	const result = await fetch(`${getApiServer()}/user/${uuid}/crew_card`, {
+		method: "GET",
+		headers: {
+			"X-Phoenix-Auth": await Oauth.getToken()
+		}
+	})
+	return result
+}
+
 export const getAuthenticationUrl = (callback: string, clientId: string) => {
 	return `${getApiServer()}/static/login.html?redirect_uri=${encodeURIComponent(callback)}&client_id=${encodeURIComponent(clientId)}`
 }
