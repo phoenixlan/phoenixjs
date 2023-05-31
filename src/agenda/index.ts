@@ -56,6 +56,27 @@ export const createAgendaEntry = async (title: string, description: string, even
     return response.status === 200
 }
 
+export const modifyAgendaEntry = async (uuid: string, title: string, description: string, event_uuid: string, newLocation: string, newTime: number, modifyReason: string, sticky: boolean) => {
+    const response = await fetch(`${getApiServer()}/agenda`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Phoenix-Auth': await Oauth.getToken(),
+        },
+        body: JSON.stringify({
+            uuid,
+            title,
+            description,
+            event_uuid,
+            newLocation,
+            newTime,
+            modifyReason,
+            sticky
+        })
+    })
+    return response.status === 200
+}
+
 export const deleteAgendaEntry = async (uuid: string) => {
     const response = await fetch(`${getApiServer()}/agenda/${uuid}`, {
         method: 'DELETE',
