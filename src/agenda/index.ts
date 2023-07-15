@@ -72,8 +72,7 @@ export const modifyAgendaEntry = async (
     state_pinned: boolean,
     state_deviating_time_unknown: boolean,
     state_cancelled: boolean,
-    log_modified_by_uuid: string,
-    log_modified_by_time: number
+    log_modified_by_uuid: string
     ) => {
     const response = await fetch(`${getApiServer()}/agenda`, {
         method: 'PATCH',
@@ -94,8 +93,7 @@ export const modifyAgendaEntry = async (
             state_pinned,
             state_deviating_time_unknown,
             state_cancelled,
-            log_modified_by_uuid,
-            log_modified_by_time
+            log_modified_by_uuid
         })
     })
     return response.status === 200
