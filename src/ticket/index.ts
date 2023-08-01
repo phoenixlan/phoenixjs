@@ -123,10 +123,10 @@ export const checkInTicket = async (ticket_id: number) => {
         try {
             error = (await response.json())['error']
         } catch (e) {
-            throw new ApiPutError('Unable to check in ticket');
+            throw new ApiPostError('Unable to check in ticket');
         }
 
-        throw new ApiPutError(error);
+        throw new ApiPostError(error);
     }
 }
 export const setTicketSeater = async (ticket_id: number, userEmail: string | undefined) => {

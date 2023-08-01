@@ -8,6 +8,7 @@ import {Avatar} from '../avatar';
 import { FullTicket, FullTicketTransfer } from "../ticket";
 import { BasicPosition } from '../position';
 import { PositionFacingPositionMapping } from '../position_mapping';
+import { BasicTicketVoucher } from '../ticketVoucher';
 
 interface UserConsent {
 	consent_type: string;
@@ -96,6 +97,22 @@ export const getPurchasedTickets = async (uuid: string): Promise<Array<FullTicke
 	}
 
 	return (await response.json()) as Array<FullTicket>;
+};
+
+export const getTicketVouchers = async (uuid: string): Promise<Array<BasicTicketVoucher>> => {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/ticket_vouchers`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		},
+	});
+
+	if (response.status !== 200) {
+		throw new ApiGetError("Unable to get the user's ticket_vouchers");
+	}
+
+	return (await response.json()) as Array<BasicTicketVoucher>;
 };
 
 export const getTicketTransfers = async (uuid: string): Promise<Array<FullTicketTransfer>> => {

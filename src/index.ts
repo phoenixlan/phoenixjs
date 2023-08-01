@@ -10,6 +10,7 @@ export * as PositionMapping from './position_mapping';
 export * as Seatmap from './seatmap';
 export * as Entrance from './entrance';
 export * as TicketType from './ticketType';
+export * as TicketVoucher from './ticketVoucher';
 export * as Ticket from './ticket';
 export * as Row from './row';
 export * from './payment';

@@ -81,6 +81,25 @@ export const getEventTicketTypes = async (uuid: string): Promise<Array<TicketTyp
     return (await response.json()) as Array<TicketType>;
 };
 
+export const addEventTicketType = async (event_uuid: string, ticket_type_uuid: string): Promise<Array<TicketType>> => {
+    const response = await fetch(`${getApiServer()}/event/${event_uuid}/ticketType`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            "X-Phoenix-Auth": await Oauth.getToken(),
+        },
+        body: JSON.stringify({
+            ticket_type_uuid
+        })
+    });
+
+    if (response.status !== 200) {
+        throw new ApiGetError("Unable to get the event's ticket types");
+    }
+
+    return (await response.json()) as Array<TicketType>;
+};
+
 export const getEventMembersRequiringMembership = async (uuid: string): Promise<Array<BasicUserWithSecretFields>> => {
     const response = await fetch(`${getApiServer()}/event/${uuid}/customers_requiring_memberships`, {
         method: 'GET',
