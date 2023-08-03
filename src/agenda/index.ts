@@ -39,7 +39,14 @@ export const getAgendaElement = async (uuid: string): Promise<AgendaEntry> => {
     return (await response.json()) as AgendaEntry;
 };
 
-export const createAgendaEntry = async (event_uuid: string, title: string, description: string, location: string, time: number, state_pinned: boolean, log_created_by_uuid: string) => {
+export const createAgendaEntry = async (
+        event_uuid: string, 
+        title: string, 
+        description: string, 
+        location: string, 
+        time: number, 
+        state_pinned: boolean
+    ) => {
     const response = await fetch(`${getApiServer()}/agenda`, {
         method: 'PUT',
         headers: {
@@ -52,27 +59,25 @@ export const createAgendaEntry = async (event_uuid: string, title: string, descr
             description,
             location,
             time,
-            state_pinned,
-            log_created_by_uuid,
+            state_pinned
         })
     })
     return response.status === 200
 }
 
 export const modifyAgendaEntry = async (
-    uuid: string, 
-    event_uuid: string, 
-    title: string, 
-    description: string, 
-    time: number,
-    location: string,
-    deviating_time: number,
-    deviating_location: string,
-    deviating_information: string,
-    state_pinned: boolean,
-    state_deviating_time_unknown: boolean,
-    state_cancelled: boolean,
-    log_modified_by_uuid: string
+        uuid: string, 
+        event_uuid: string, 
+        title: string, 
+        description: string, 
+        time: number,
+        location: string,
+        deviating_time: number,
+        deviating_location: string,
+        deviating_information: string,
+        state_pinned: boolean,
+        state_deviating_time_unknown: boolean,
+        state_cancelled: boolean,
     ) => {
     const response = await fetch(`${getApiServer()}/agenda`, {
         method: 'PATCH',
@@ -93,7 +98,6 @@ export const modifyAgendaEntry = async (
             state_pinned,
             state_deviating_time_unknown,
             state_cancelled,
-            log_modified_by_uuid
         })
     })
     return response.status === 200
