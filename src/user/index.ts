@@ -9,6 +9,7 @@ import { FullTicket, FullTicketTransfer } from "../ticket";
 import { BasicPosition } from '../position';
 import { PositionFacingPositionMapping } from '../position_mapping';
 import { BasicTicketVoucher } from '../ticketVoucher';
+import { Friendship } from '../friend_request';
 
 interface UserConsent {
 	consent_type: string;
@@ -66,6 +67,38 @@ export interface DiscordMapping {
 interface DiscordMappingCreationInformation {
 	url: string;
 }
+
+export const getFriendships = async (uuid: string): Promise<Array<Friendship>> => {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/friendships`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		},
+	});
+
+	if (response.status !== 200) {
+		throw new ApiGetError("Unable to get the user's active friendships");
+	}
+
+	return (await response.json()) as Array<Friendship>;
+};
+
+export const getFriendRequests = async (uuid: string): Promise<Array<Friendship>> => {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/friend_requests`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			"X-Phoenix-Auth": await Oauth.getToken()
+		},
+	});
+
+	if (response.status !== 200) {
+		throw new ApiGetError("Unable to get the user's active friend requests");
+	}
+
+	return (await response.json()) as Array<Friendship>;
+};
 
 export const getOwnedTickets = async (uuid: string): Promise<Array<FullTicket>> => {
 	const response = await fetch(`${getApiServer()}/user/${uuid}/owned_tickets`, {
