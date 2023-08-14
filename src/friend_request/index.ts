@@ -5,7 +5,7 @@ import { Oauth } from "../user"
 
 import { BasicUser } from "../user";
 
-interface Friendship{
+export interface Friendship{
     uuid: string;
 
     source_user: BasicUser;
