@@ -15,3 +15,4 @@ export * as Ticket from './ticket';
 export * as Row from './row';
 export * from './payment';
 export * as Agenda from './agenda';
+export * as Email from "./email";
