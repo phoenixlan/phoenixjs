@@ -39,7 +39,14 @@ export const getAgendaElement = async (uuid: string): Promise<AgendaEntry> => {
     return (await response.json()) as AgendaEntry;
 };
 
-export const createAgendaEntry = async (title: string, description: string, event_uuid: string, time: number) => {
+export const createAgendaEntry = async (
+        event_uuid: string, 
+        title: string, 
+        description: string, 
+        location: string, 
+        time: number, 
+        pinned: boolean
+    ) => {
     const response = await fetch(`${getApiServer()}/agenda`, {
         method: 'PUT',
         headers: {
@@ -47,13 +54,53 @@ export const createAgendaEntry = async (title: string, description: string, even
             'X-Phoenix-Auth': await Oauth.getToken(),
         },
         body: JSON.stringify({
+            event_uuid,
             title,
             description,
-            event_uuid,
-            time
+            location,
+            time,
+            pinned
         })
     })
-    return response.status === 200
+    return response.ok
+}
+
+export const modifyAgendaEntry = async (
+        uuid: string, 
+        event_uuid: string, 
+        title: string, 
+        description: string, 
+        time: number,
+        location: string,
+        deviating_time_unknown: boolean,
+        deviating_location: string,
+        deviating_information: string,
+        pinned: boolean,
+        cancelled: boolean,
+        deviating_time?: number,
+    ) => {
+    const response = await fetch(`${getApiServer()}/agenda/${uuid}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Phoenix-Auth': await Oauth.getToken(),
+        },
+        body: JSON.stringify({
+            uuid,
+            event_uuid,
+            title,
+            description,
+            time,
+            location,
+            deviating_time,
+            deviating_time_unknown,
+            deviating_location,
+            deviating_information,
+            pinned,
+            cancelled,
+        })
+    })
+    return response.ok
 }
 
 export const deleteAgendaEntry = async (uuid: string) => {
@@ -64,5 +111,5 @@ export const deleteAgendaEntry = async (uuid: string) => {
             'X-Phoenix-Auth': await Oauth.getToken()
         }
     })
-    return response.status === 200
+    return response.ok
 }
