@@ -1,7 +1,7 @@
 import {getApiServer} from "../../meta";
-import {BasicUser} from "../../user";
+import {BasicUser, FullUser} from "../../user";
 import * as Oauth from "../../user/oauth";
-import {ApiGetError, ApiPutError, ApiParameterError} from "../../errors";
+import {ApiGetError, ApiPatchError, ApiPutError, ApiParameterError} from "../../errors";
 import { BaseCrew } from '../'
 import { Event } from "../../events"
 
@@ -20,11 +20,10 @@ export interface ApplicationCrewMapping {
     accepted: boolean;
 }
 
-export interface Application {
+export interface BaseApplication {
     uuid: string,
     crews: Array<ApplicationCrewMapping>,
     event: Event,
-    user: BasicUser,
     contents: string,
     created: number,
     /* this doesnt exist yet */
@@ -32,7 +31,14 @@ export interface Application {
     answer?: string
 }
 
-export const getAllApplications = async (): Promise<Array<Application>> => {
+export type BasicApplication = BaseApplication & {
+    user: BasicUser,
+}
+export type ApplicationWithFullUser = BaseApplication & {
+    user: FullUser,
+}
+
+export const getAllApplications = async (): Promise<Array<BasicApplication>> => {
     const response = await fetch(`${getApiServer()}/application`, {
         method: 'GET',
         headers: {
@@ -45,10 +51,10 @@ export const getAllApplications = async (): Promise<Array<Application>> => {
         throw new ApiGetError('Unable to get applications');
     }
 
-    return (await response.json()) as Array<Application>;
+    return (await response.json()) as Array<BasicApplication>;
 };
 
-export const getApplication = async (uuid: string): Promise<Application> => {
+export const getApplication = async (uuid: string): Promise<BasicApplication> => {
     if (!uuid) {
         throw new ApiParameterError('uuid cannot be null');
     }
@@ -64,10 +70,12 @@ export const getApplication = async (uuid: string): Promise<Application> => {
         throw new ApiGetError('Unable to get applications');
     }
 
-    return (await response.json()) as Application;
+    return (await response.json()) as BasicApplication;
 };
 
-export const getAllApplicationsByEvent = async (event: Event): Promise<Array<Application>> => {
+// Scream test
+/*
+export const getAllApplicationsByEvent = async (event: Event): Promise<Array<BasicApplication>> => {
     if (!event) {
         throw new ApiParameterError('Event cannot be null');
     }
@@ -83,11 +91,11 @@ export const getAllApplicationsByEvent = async (event: Event): Promise<Array<App
         throw new ApiGetError('Unable to get applications');
     }
 
-    return (await response.json()) as Array<Application>;
+    return (await response.json()) as Array<BasicApplication>;
 };
+*/
 
-
-export const getUserApplications = async (): Promise<Array<Application>> => {
+export const getUserApplications = async (): Promise<Array<BasicApplication>> => {
     const response = await fetch(`${getApiServer()}/application/my`, {
         method: 'GET',
         headers: {
@@ -100,10 +108,10 @@ export const getUserApplications = async (): Promise<Array<Application>> => {
         throw new ApiGetError('Unable to get applications');
     }
 
-    return (await response.json()) as Array<Application>;
+    return (await response.json()) as Array<BasicApplication>;
 };
 
-export const createApplication = async (crews: Array<string>, contents: string): Promise<Application> => {
+export const createApplication = async (crews: Array<string>, contents: string): Promise<BasicApplication> => {
     const response = await fetch(`${getApiServer()}/application`, {
         method: 'PUT',
         headers: {
@@ -126,7 +134,7 @@ export const createApplication = async (crews: Array<string>, contents: string):
         throw new ApiPutError(error);
     }
 
-    return (await response.json()) as Application;
+    return (await response.json()) as BasicApplication;
 }
 
 export const answerApplication = async (uuid: string, crew_uuid: string, answer: string, state: ApplicationState.accepted|ApplicationState.rejected): Promise<void> => {
@@ -153,6 +161,29 @@ export const answerApplication = async (uuid: string, crew_uuid: string, answer:
     });
 
     if (response.status !== 200) {
-        throw new ApiGetError('Unable to answer application');
+        throw new ApiPatchError('Unable to answer application');
+    }
+};
+
+export const hideApplication = async (uuid: string): Promise<void> => {
+    if (!uuid) {
+        throw new ApiParameterError('uuid cannot be null');
+    }
+    const response = await fetch(`${getApiServer()}/application/${uuid}/hide`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            "X-Phoenix-Auth": await Oauth.getToken(),
+        }
+    });
+
+    if(!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json() as { error: string }).error;
+        } catch (e) {
+            throw new ApiPatchError('Unable to hide application: ' + e);
+        }
+        throw new ApiPatchError(error);
     }
 };
