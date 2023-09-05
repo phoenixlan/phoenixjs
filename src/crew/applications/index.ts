@@ -28,6 +28,7 @@ export interface BaseApplication {
     created: number,
     /* this doesnt exist yet */
     state: string,
+    hidden: boolean,
     answer?: string
 }
 
