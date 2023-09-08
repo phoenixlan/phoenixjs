@@ -3,6 +3,7 @@ import {ApiGetError} from "../errors";
 import { BasicUserWithSecretFields, Oauth } from "../user";
 import { BasicTicket } from "../ticket";
 import { TicketType } from "../ticketType";
+import { BasicApplication } from "../crew/applications";
 
 export interface Event {
     name: string;
@@ -143,4 +144,20 @@ export const getEventTickets = async (uuid: string): Promise<Array<BasicTicket>>
     }
 
     return (await response.json()) as Array<BasicTicket>;
+};
+
+export const getApplicationsByEvent = async (event_uuid: string): Promise<Array<BasicApplication>> => {
+    const response = await fetch(`${getApiServer()}/event/${event_uuid}/applications`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            "X-Phoenix-Auth": await Oauth.getToken(),
+        },
+    });
+
+    if (response.status !== 200) {
+        throw new ApiGetError('Unable to get applications');
+    }
+
+    return (await response.json()) as Array<BasicApplication>;
 };
