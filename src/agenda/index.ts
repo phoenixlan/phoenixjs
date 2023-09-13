@@ -1,6 +1,6 @@
 import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
-import {ApiGetError} from "../errors";
+import {ApiGetError, ApiPostError} from "../errors";
 
 interface AgendaEntry {
     uuid: string;
@@ -9,7 +9,7 @@ interface AgendaEntry {
     description: string;
 }
 
-export const getAgenda = async (): Promise<Array<AgendaEntry>> => {
+export const getAgenda = async (): Promise<Array<AgendaEntry[]>> => {
     const response = await fetch(`${getApiServer()}/agenda/`, {
         method: 'GET',
         headers: {
@@ -17,14 +17,14 @@ export const getAgenda = async (): Promise<Array<AgendaEntry>> => {
         },
     });
 
-    if (response.status !== 200) {
+    if (!response.ok) {
         throw new ApiGetError('Unable to get agenda');
     }
 
-    return (await response.json()) as Array<AgendaEntry>;
+    return (await response.json()) as Array<AgendaEntry[]>;
 };
 
-export const getAgendaElement = async (uuid: string): Promise<AgendaEntry> => {
+export const getAgendaElement = async (uuid: string): Promise<AgendaEntry[]> => {
     const response = await fetch(`${getApiServer()}/agenda/${uuid}`, {
         method: 'GET',
         headers: {
@@ -32,11 +32,11 @@ export const getAgendaElement = async (uuid: string): Promise<AgendaEntry> => {
         },
     });
 
-    if (response.status !== 200) {
-        throw new ApiGetError('Unable to get agenda element');
+    if (!response.ok) {
+        throw new ApiGetError('Unable to get agenda element.');
     }
 
-    return (await response.json()) as AgendaEntry;
+    return (await response.json()) as AgendaEntry[];
 };
 
 export const createAgendaEntry = async (
@@ -62,7 +62,19 @@ export const createAgendaEntry = async (
             pinned
         })
     })
-    return response.ok
+
+    if (!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json())['error'];
+        } catch (e) {
+            throw new ApiPostError('Unable to create a new agenda entry.');
+        }
+
+        throw new ApiPostError(error);
+    } else {
+        return await response.json() as AgendaEntry;
+    }
 }
 
 export const modifyAgendaEntry = async (
@@ -92,15 +104,25 @@ export const modifyAgendaEntry = async (
             description,
             time,
             location,
-            deviating_time,
             deviating_time_unknown,
             deviating_location,
             deviating_information,
             pinned,
             cancelled,
+            deviating_time
         })
     })
-    return response.ok
+    if (!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json())['error'];
+        } catch (e) {
+            throw new ApiPostError('Unable to modify requested agenda entry.');
+        }
+        throw new ApiPostError(error);
+    } else {
+        return await response.json() as AgendaEntry;
+    }
 }
 
 export const deleteAgendaEntry = async (uuid: string) => {
@@ -111,5 +133,15 @@ export const deleteAgendaEntry = async (uuid: string) => {
             'X-Phoenix-Auth': await Oauth.getToken()
         }
     })
-    return response.ok
+    if (!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json())['error'];
+        } catch (e) {
+            throw new ApiPostError('Unable to delete requested agenda entry.');
+        }
+        throw new ApiPostError(error);
+    } else {
+        return await response.json() as AgendaEntry;
+    }
 }
