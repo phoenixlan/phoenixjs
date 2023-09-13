@@ -1,6 +1,6 @@
 import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
-import {ApiGetError, ApiPostError} from "../errors";
+import {ApiDeleteError, ApiGetError, ApiPutError} from "../errors";
 
 interface AgendaEntry {
     uuid: string;
@@ -68,10 +68,10 @@ export const createAgendaEntry = async (
         try {
             error = (await response.json())['error'];
         } catch (e) {
-            throw new ApiPostError('Unable to create a new agenda entry.');
+            throw new ApiPutError('Unable to create a new agenda entry.');
         }
 
-        throw new ApiPostError(error);
+        throw new ApiPutError(error);
     } else {
         return await response.json() as AgendaEntry;
     }
@@ -117,9 +117,9 @@ export const modifyAgendaEntry = async (
         try {
             error = (await response.json())['error'];
         } catch (e) {
-            throw new ApiPostError('Unable to modify requested agenda entry.');
+            throw new ApiPutError('Unable to modify requested agenda entry.');
         }
-        throw new ApiPostError(error);
+        throw new ApiPutError(error);
     } else {
         return await response.json() as AgendaEntry;
     }
@@ -138,9 +138,9 @@ export const deleteAgendaEntry = async (uuid: string) => {
         try {
             error = (await response.json())['error'];
         } catch (e) {
-            throw new ApiPostError('Unable to delete requested agenda entry.');
+            throw new ApiDeleteError('Unable to delete requested agenda entry.');
         }
-        throw new ApiPostError(error);
+        throw new ApiDeleteError(error);
     } else {
         return await response.json() as AgendaEntry;
     }
