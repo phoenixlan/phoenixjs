@@ -4,7 +4,7 @@ This repo contains PhoenixJS - a common JavaScript library for interfacing easil
 
 ## Requirements
 
-You need to install commitizen: `yarn global add commitizen`
+You need to install commitizen: `yarn global add commitizen` in order to develop. I am so sorry.
 
 ## Commit rules
 
