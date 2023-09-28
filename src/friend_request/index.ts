@@ -22,7 +22,7 @@ export const createFriendRequest = async (user_email: string) => {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             user_email: user_email
@@ -47,7 +47,7 @@ export const viewFriendRequest = async (uuid: string): Promise<Friendship> => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		},
 	});
 
@@ -63,7 +63,7 @@ export const revokeFriendRequest = async (uuid: string) => {
         method: 'DELETE',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }
     });
 
@@ -85,7 +85,7 @@ export const acceptFriendRequest = async (uuid: string) => {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }
     });
 

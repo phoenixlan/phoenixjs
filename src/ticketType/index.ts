@@ -17,7 +17,7 @@ export const getTicketTypes = async () => {
     const response = await fetch(`${getApiServer()}/ticketType/`, {
         method: 'GET',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 

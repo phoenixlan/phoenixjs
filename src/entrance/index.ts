@@ -11,7 +11,7 @@ export const getEntrances = async () => {
     const response = await fetch(`${getApiServer()}/entrance/`, {
         method: 'GET',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 

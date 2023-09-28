@@ -44,7 +44,7 @@ export const getAllApplications = async (): Promise<Array<BasicApplication>> => 
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
@@ -63,7 +63,7 @@ export const getApplication = async (uuid: string): Promise<BasicApplication> =>
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
@@ -84,7 +84,7 @@ export const getAllApplicationsByEvent = async (event: Event): Promise<Array<Bas
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
@@ -101,7 +101,7 @@ export const getUserApplications = async (): Promise<Array<BasicApplication>> =>
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
@@ -117,7 +117,7 @@ export const createApplication = async (crews: Array<string>, contents: string):
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             crews,
@@ -152,7 +152,7 @@ export const answerApplication = async (uuid: string, crew_uuid: string, answer:
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             answer,
@@ -174,7 +174,7 @@ export const hideApplication = async (uuid: string): Promise<void> => {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }
     });
 

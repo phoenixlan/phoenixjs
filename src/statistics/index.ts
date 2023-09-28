@@ -19,7 +19,7 @@ export const getTicketSaleData = async (include_free: boolean): Promise<TicketSa
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }
     });
 

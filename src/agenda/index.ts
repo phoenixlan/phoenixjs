@@ -51,7 +51,7 @@ export const createAgendaEntry = async (
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'X-Phoenix-Auth': await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders())
         },
         body: JSON.stringify({
             event_uuid,
@@ -95,7 +95,7 @@ export const modifyAgendaEntry = async (
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
-            'X-Phoenix-Auth': await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders())
         },
         body: JSON.stringify({
             uuid,
@@ -130,7 +130,7 @@ export const deleteAgendaEntry = async (uuid: string) => {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
-            'X-Phoenix-Auth': await Oauth.getToken()
+            ...(await Oauth.getAuthHeaders())
         }
     })
     if (!response.ok) {

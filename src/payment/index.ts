@@ -35,7 +35,7 @@ export const createPayment = async (store_session: string, provider: string) => 
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             store_session,
@@ -59,7 +59,7 @@ export const initiatePayment = async (paymentUuid: string, fallbackUrl?: string)
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify(body)
     });
@@ -86,7 +86,7 @@ export const poll = async (uuid: string) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'X-Phoenix-Auth': await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 

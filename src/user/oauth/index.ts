@@ -16,13 +16,13 @@ export interface JWTPayload {
 export const authenticateByCode = async (code: string) => {
 	const result = await fetch(`${getApiServer()}/oauth/token`, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			grant_type: 'code',
+		headers:{
+			'Content-Type': 'application/x-www-form-urlencoded'
+		  },    
+		  body: new URLSearchParams({
+			grant_type: 'authorization_code',
 			code
-		})
+		  })
 	});
 
 	if(result.status !== 200) {
@@ -30,11 +30,11 @@ export const authenticateByCode = async (code: string) => {
 	}
 
 	const response = await result.json() as {
-		token: string,
+		access_token: string,
 		refresh_token: string
 	}
 
-	TOKEN = response.token;
+	TOKEN = response.access_token;
 	REFRESH_TOKEN = response.refresh_token;
 	return true;
 }
@@ -55,7 +55,10 @@ const refreshToken = async () => {
 		throw new RefreshError("Unable to authenticate");
 	}
 
-	TOKEN = (await result.json()).token;
+	const tokens = await result.json();
+
+	TOKEN = tokens.access_token;
+	REFRESH_TOKEN = tokens.refresh_token;
 }
 
 const checkExpiry = (token: JWTPayload) => {
@@ -85,6 +88,13 @@ export const getToken = async () => {
 	}
 
 	return TOKEN;
+}
+
+export const getAuthHeaders = async () => {
+	const token = await getToken();
+	return {
+		"Authorization": `Bearer ${token}`
+	}
 }
 
 export const getRefreshToken = async () => {

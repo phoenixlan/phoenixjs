@@ -7,7 +7,7 @@ export const emailDryrun = async (recipient_category: string, subject: string, b
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }, body: JSON.stringify({
             recipient_category,
             subject,
@@ -33,7 +33,7 @@ export const sendEmails = async (recipient_category: string, subject: string, bo
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }, body: JSON.stringify({
             recipient_category,
             subject,

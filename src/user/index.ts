@@ -73,7 +73,7 @@ export const getFriendships = async (uuid: string): Promise<Array<Friendship>> =
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		},
 	});
 
@@ -89,7 +89,7 @@ export const getFriendRequests = async (uuid: string): Promise<Array<Friendship>
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		},
 	});
 
@@ -105,7 +105,7 @@ export const getOwnedTickets = async (uuid: string): Promise<Array<FullTicket>> 
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		},
 	});
 
@@ -121,7 +121,7 @@ export const getPurchasedTickets = async (uuid: string): Promise<Array<FullTicke
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		},
 	});
 
@@ -137,7 +137,7 @@ export const getTicketVouchers = async (uuid: string): Promise<Array<BasicTicket
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		},
 	});
 
@@ -153,7 +153,7 @@ export const getTicketTransfers = async (uuid: string): Promise<Array<FullTicket
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		},
 	});
 
@@ -168,7 +168,7 @@ export const getSeatableTickets = async (uuid: string, event_uuid?: string): Pro
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		},
 	});
 
@@ -184,7 +184,7 @@ export const getAuthenticatedUser = async () => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 	if(result.status !== 200) {
@@ -199,7 +199,7 @@ export const getUserMembershipStatus = async (uuid: string, year?: number) => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 	if(result.status !== 200) {
@@ -214,7 +214,7 @@ export const getUser = async (uuid: string) => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 	if(result.status !== 200) {
@@ -229,7 +229,7 @@ export const getUserActivationState = async (uuid: string) => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 	if(result.status !== 200) {
@@ -244,7 +244,7 @@ export const activateUser = async (uuid: string) => {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 	if(result.status !== 200) {
@@ -256,7 +256,7 @@ export const searchUsers = async (query: string) => {
 	const result = await fetch(`${getApiServer()}/user/search?query=${encodeURIComponent(query)}`, {
 		method: 'GET',
 		headers: {
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 	if(result.status !== 200) {
@@ -272,7 +272,7 @@ export const getUsers = async () => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 	if(result.status !== 200) {
@@ -287,7 +287,7 @@ export const createDiscordMappingOauthUrl = async (uuid: string) => {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 	if(!result.ok) {
@@ -306,7 +306,7 @@ export const revokeDiscordMapping = async (uuid: string) => {
 		method: 'DELETE',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 
@@ -320,7 +320,7 @@ export const getDiscordMapping = async (uuid: string) => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 	if(result.status === 404) {
@@ -338,7 +338,7 @@ export const getCrewCard = async (uuid: string) => {
 	const result = await fetch(`${getApiServer()}/user/${uuid}/crew_card`, {
 		method: "GET",
 		headers: {
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 	return result

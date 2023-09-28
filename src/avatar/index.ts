@@ -25,7 +25,7 @@ export const createAvatar = async (file: File, x: number, y: number, w: number, 
 	const result = await fetch(`${getApiServer()}/user/${uuid}/avatar`, {
 		method: 'POST',
 		headers: {
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		},
 		body: data,
 	});
@@ -39,7 +39,7 @@ export const deleteAvatar = async (uuid: string) => {
 	const result = await fetch(`${getApiServer()}/avatar/${uuid}`, {
 		method: 'DELETE',
 		headers: {
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	});
 
@@ -53,7 +53,7 @@ export const getAvatar = async (uuid: string) => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 	if(result.status !== 200) {
@@ -69,7 +69,7 @@ export const getAvatars = async () => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 	if(result.status !== 200) {
@@ -84,7 +84,7 @@ export const getPendingAvatars = async () => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		}
 	})
 	if(result.status !== 200) {
@@ -99,7 +99,7 @@ export const setApproved = async (uuid: string, state: boolean) => {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		},
 		body: JSON.stringify({
 			new_state: state ? "accepted": "rejected"

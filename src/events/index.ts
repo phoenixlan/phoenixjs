@@ -87,7 +87,7 @@ export const addEventTicketType = async (event_uuid: string, ticket_type_uuid: s
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             ticket_type_uuid
@@ -105,7 +105,7 @@ export const getEventMembersRequiringMembership = async (uuid: string): Promise<
     const response = await fetch(`${getApiServer()}/event/${uuid}/customers_requiring_memberships`, {
         method: 'GET',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }
     });
 
@@ -120,7 +120,7 @@ export const getEventNewMembers = async (uuid: string): Promise<Array<BasicUserW
     const response = await fetch(`${getApiServer()}/event/${uuid}/new_memberships`, {
         method: 'GET',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }
     });
 
@@ -135,7 +135,7 @@ export const getEventTickets = async (uuid: string): Promise<Array<BasicTicket>>
     const response = await fetch(`${getApiServer()}/event/${uuid}/ticket`, {
         method: 'GET',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }
     });
 
@@ -151,7 +151,7 @@ export const getApplicationsByEvent = async (event_uuid: string): Promise<Array<
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 

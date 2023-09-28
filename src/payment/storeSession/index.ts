@@ -35,7 +35,7 @@ export const getActiveStoreSessions = async () => {
     const response = await fetch(`${getApiServer()}/store_session/active`, {
         method: 'GET',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
@@ -51,7 +51,7 @@ export const createStoreSession = async (data: Cart) => {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify(data)
     });

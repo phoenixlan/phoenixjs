@@ -31,7 +31,7 @@ export const getPosition = async (uuid: string) => {
     const response = await fetch(`${getApiServer()}/position/${uuid}`, {
         method: 'GET',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
@@ -46,7 +46,7 @@ export const getPositions = async () => {
     const response = await fetch(`${getApiServer()}/position/`, {
         method: 'GET',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
@@ -61,7 +61,7 @@ export const createPosition = async (name: string, description: string, crew_uui
     const response = await fetch(`${getApiServer()}/position/`, {
         method: 'POST',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             name,

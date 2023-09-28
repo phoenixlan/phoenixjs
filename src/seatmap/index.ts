@@ -33,7 +33,7 @@ export const createSeatmap = async (name: string, description: string) => {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             name,
@@ -51,7 +51,7 @@ export const getSeatmap = async (uuid: string) => {
     const response = await fetch(`${getApiServer()}/seatmap/${uuid}`, {
         method: 'GET',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
@@ -66,7 +66,7 @@ export const getSeatmapAvailability = async (uuid: string) => {
     const response = await fetch(`${getApiServer()}/seatmap/${uuid}/availability`, {
         method: 'GET',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
@@ -81,7 +81,7 @@ export const getSeatmaps = async () => {
     const response = await fetch(`${getApiServer()}/seatmap/`, {
         method: 'GET',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
@@ -98,7 +98,7 @@ export const addRow = async (seatmapUuid: string, rowNumber: number, x: number, 
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             row_number: rowNumber,
@@ -121,7 +121,7 @@ export const uploadBackground = async (uuid: string, body: FormData) => {
     const response = await fetch(`${getApiServer()}/seatmap/${uuid}/background`, {
         method: 'PUT',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body
     });

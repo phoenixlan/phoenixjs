@@ -27,7 +27,7 @@ export const createTicketVoucher = async (recipient_user_uuid: string, ticket_ty
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             recipient_user_uuid,
@@ -54,7 +54,7 @@ export const burnTicketVoucher = async (ticket_voucher_uuid: string) => {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }
     });
 
@@ -75,7 +75,7 @@ export const getAllTicketVouchers = async (): Promise<Array<BasicTicketVoucher>>
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			"X-Phoenix-Auth": await Oauth.getToken()
+			...(await Oauth.getAuthHeaders())
 		},
 	});
 

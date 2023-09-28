@@ -31,7 +31,7 @@ export const deletePositionMapping = async (position_mapping_uuid: string) => {
     const response = await fetch(`${getApiServer()}/position_mapping/${position_mapping_uuid}`, {
         method: 'DELETE',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }
     });
 
@@ -52,7 +52,7 @@ export const createPositionMapping = async (user_uuid: string, position_uuid: st
     const response = await fetch(`${getApiServer()}/position_mapping/`, {
         method: 'POST',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             user_uuid,

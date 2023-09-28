@@ -31,7 +31,7 @@ export const getCrews = async (): Promise<Array<BaseCrew>> => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
@@ -47,7 +47,7 @@ export const getCrew = async (uuid: string): Promise<FullCrew> => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 

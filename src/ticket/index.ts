@@ -46,7 +46,7 @@ export const getTicket = async (ticket_id: number): Promise<FullTicket> => {
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }
     });
 
@@ -68,7 +68,7 @@ export const transferTicket = async (ticket_id: number, userEmail: string) => {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             user_email: userEmail
@@ -93,7 +93,7 @@ export const revertTransfer = async (uuid: string) => {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }
     });
 
@@ -114,7 +114,7 @@ export const checkInTicket = async (ticket_id: number) => {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         }
     });
 
@@ -134,7 +134,7 @@ export const setTicketSeater = async (ticket_id: number, userEmail: string | und
         method: 'PUT',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             user_email: userEmail
@@ -158,7 +158,7 @@ export const seatTicket = async (ticket_id: number, seatUuid: string) => {
         method: 'PUT',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             seat_uuid: seatUuid
@@ -182,7 +182,7 @@ export const createTicket = async (recipient: string, ticketType: string) => {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
             recipient,

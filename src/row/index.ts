@@ -80,7 +80,7 @@ export const updateRow = async (uuid: string, options: RowUpdatableFields) => {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify(options)
     });
@@ -96,7 +96,7 @@ export const addSeat = async (rowUuid: string) => {
     const response = await fetch(`${getApiServer()}/row/${rowUuid}/seat`, {
         method: 'PUT',
         headers: {
-            "X-Phoenix-Auth": await Oauth.getToken(),
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
