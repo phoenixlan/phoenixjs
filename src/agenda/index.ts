@@ -4,7 +4,7 @@ import {ApiDeleteError, ApiGetError, ApiPutError} from "../errors";
 
 interface AgendaEntry {
     uuid: string;
-    time: number;
+    start_time: number;
     title: string;
     description: string;
 }
@@ -44,7 +44,8 @@ export const createAgendaEntry = async (
         title: string, 
         description: string, 
         location: string, 
-        time: number, 
+        start_time: number, 
+        end_time: number,
         pinned: boolean
     ) => {
     const response = await fetch(`${getApiServer()}/agenda`, {
@@ -58,7 +59,8 @@ export const createAgendaEntry = async (
             title,
             description,
             location,
-            time,
+            start_time,
+            end_time,
             pinned
         })
     })
@@ -82,9 +84,10 @@ export const modifyAgendaEntry = async (
         event_uuid: string, 
         title: string, 
         description: string, 
-        time: number,
+        start_time: number,
+        end_time: number,
         location: string,
-        deviating_time_unknown: boolean,
+        deviating_start_time_unknown: boolean,
         deviating_location: string,
         deviating_information: string,
         pinned: boolean,
@@ -102,9 +105,10 @@ export const modifyAgendaEntry = async (
             event_uuid,
             title,
             description,
-            time,
+            start_time,
+            end_time,
             location,
-            deviating_time_unknown,
+            deviating_start_time_unknown,
             deviating_location,
             deviating_information,
             pinned,
