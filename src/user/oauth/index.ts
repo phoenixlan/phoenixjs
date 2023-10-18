@@ -42,10 +42,7 @@ export const authenticateByCode = async (code: string) => {
 const refreshToken = async () => {
 	const result = await fetch(`${getApiServer()}/oauth/token`, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
+		body: new URLSearchParams({
 			grant_type: 'refresh_token',
 			refresh_token: REFRESH_TOKEN
 		})
