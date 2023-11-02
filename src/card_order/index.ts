@@ -54,8 +54,12 @@ export const createCardOrder = async (user_uuid: string) => {
     return await response.json() as BasicCardOrder;
 }
 
-export const getAllCardOrders = async (event_uuid:string|null) => {
-    const response = await fetch(`${getApiServer()}/card_order/?event_uuid=${event_uuid}`, { // Idk if this works
+export const getAllCardOrders = async (event_uuid:string|undefined) => {
+    let param = ""
+    if (typeof event_uuid !== "undefined") {
+        param = "?event_uuid=" + event_uuid
+    }
+    const response = await fetch(`${getApiServer()}/card_order/${param}`, {
 		method: "GET",
         headers: {
 			"Content-Type": "application/json",
