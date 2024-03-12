@@ -2,7 +2,7 @@ import * as Oauth from './oauth'
 
 
 import { getApiServer } from '../meta/api';
-import {ApiGetError, AuthError} from "../errors";
+import {ApiGetError, AuthError, ApiPutError} from "../errors";
 
 import {Avatar} from '../avatar';
 import { FullTicket, FullTicketTransfer } from "../ticket";
@@ -222,6 +222,51 @@ export const getUser = async (uuid: string) => {
 	}
 
 	return await result.json() as FullUser;
+}
+
+export const modifyUser = async (
+	uuid: string,
+	firstname: string, 
+	lastname: string, 
+	username: string, 
+	email: string, 
+	phone: string,
+	guardian_phone: string,
+	address: string,
+	postal_code: string,
+	birthdate: string,
+	gender: string,
+) => {
+const response = await fetch(`${getApiServer()}/user/${uuid}`, {
+	method: 'PATCH',
+	headers: {
+		'Content-Type': 'application/json',
+		...(await Oauth.getAuthHeaders())
+	},
+	body: JSON.stringify({
+		uuid,
+		firstname, 
+		lastname, 
+		username, 
+		email, 
+		phone,
+		guardian_phone,
+		address,
+		postal_code,
+		birthdate,
+		gender
+	})})
+	if (!response.ok) {
+		let error = ""
+		try {
+			error = (await response.json())['error'];
+		} catch (e) {
+			throw new ApiPutError('Unable to modify user.');
+		}
+		throw new ApiPutError(error);
+	} else {
+		return await response.json() as BasicUserWithSecretFields;
+	}
 }
 
 export const getUserActivationState = async (uuid: string) => {
