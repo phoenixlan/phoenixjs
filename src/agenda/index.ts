@@ -45,6 +45,7 @@ export const createAgendaEntry = async (
         description: string, 
         location: string, 
         time: number, 
+        duration: number,
         pinned: boolean
     ) => {
     const response = await fetch(`${getApiServer()}/agenda`, {
@@ -59,6 +60,7 @@ export const createAgendaEntry = async (
             description,
             location,
             time,
+            duration,
             pinned
         })
     })
@@ -83,13 +85,14 @@ export const modifyAgendaEntry = async (
         title: string, 
         description: string, 
         time: number,
+        duration: number,
         location: string,
         deviating_time_unknown: boolean,
         deviating_location: string,
         deviating_information: string,
         pinned: boolean,
         cancelled: boolean,
-        deviating_time?: number,
+        deviating_time?: number
     ) => {
     const response = await fetch(`${getApiServer()}/agenda/${uuid}`, {
         method: 'PATCH',
@@ -103,6 +106,7 @@ export const modifyAgendaEntry = async (
             title,
             description,
             time,
+            duration,
             location,
             deviating_time_unknown,
             deviating_location,
