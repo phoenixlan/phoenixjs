@@ -4,7 +4,7 @@ import {ApiDeleteError, ApiGetError, ApiPutError} from "../errors";
 
 interface AgendaEntry {
     uuid: string;
-    start_time: number;
+    time: number;
     title: string;
     description: string;
 }
