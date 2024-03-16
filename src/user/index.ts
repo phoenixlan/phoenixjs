@@ -217,8 +217,11 @@ export const getUser = async (uuid: string) => {
 			...(await Oauth.getAuthHeaders())
 		}
 	})
-	if(result.status !== 200) {
-		throw new AuthError("Unable to get user");
+	if(result.status === 403) {
+		throw new AuthError("You do not have access to view this user. (403 Forbidden)");
+	}
+	else if(result.status !== 200) {
+		throw new AuthError("We were unable to get information about this user.");
 	}
 
 	return await result.json() as FullUser;
@@ -277,8 +280,11 @@ export const getUserActivationState = async (uuid: string) => {
 			...(await Oauth.getAuthHeaders())
 		}
 	})
-	if(result.status !== 200) {
-		throw new AuthError("Unable to get authentication token");
+	if(result.status === 403) {
+		throw new AuthError("You do not have access to view a user's activation status. (403 Forbidden)");
+	}
+	else if(result.status !== 200) {
+		throw new AuthError("We were unable to get this user's activation status.");
 	}
 
 	return (await result.json()).activated as boolean;
