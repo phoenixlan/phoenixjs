@@ -229,16 +229,16 @@ export const getUser = async (uuid: string) => {
 
 export const modifyUser = async (
 	uuid: string,
-	firstname: string, 
-	lastname: string, 
-	username: string, 
-	email: string, 
-	phone: string,
-	guardian_phone: string,
-	address: string,
-	postal_code: string,
-	birthdate: string,
-	gender: string,
+	firstname?: string, 
+	lastname?: string, 
+	username?: string, 
+	email?: string, 
+	phone?: string,
+	guardian_phone?: string,
+	address?: string,
+	postal_code?: string,
+	birthdate?: string,
+	gender?: string,
 ) => {
 const response = await fetch(`${getApiServer()}/user/${uuid}`, {
 	method: 'PATCH',
@@ -299,7 +299,7 @@ export const activateUser = async (uuid: string) => {
 		}
 	})
 	if(result.status !== 200) {
-		throw new AuthError("Unable to get authentication token");
+		throw new AuthError("Unable to activate this user.");
 	}
 }
 
