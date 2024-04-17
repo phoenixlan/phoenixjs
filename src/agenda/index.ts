@@ -125,7 +125,7 @@ export const modifyAgendaEntry = async (
             error = (await response.json())['error'];
             throw new ApiPatchError(error);
         } catch (e) {
-            throw new ApiPutError('Unable to modify requested agenda entry.');
+            throw new ApiPatchError('Unable to modify requested agenda entry.');
         }
     } 
     else {
