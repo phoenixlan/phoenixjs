@@ -2,7 +2,7 @@ import * as Oauth from './oauth'
 
 
 import { getApiServer } from '../meta/api';
-import {ApiGetError, AuthError, ApiPutError} from "../errors";
+import {ApiGetError, AuthError, ApiPutError, ApiPatchError} from "../errors";
 
 import {Avatar} from '../avatar';
 import { FullTicket, FullTicketTransfer } from "../ticket";
@@ -218,10 +218,10 @@ export const getUser = async (uuid: string) => {
 		}
 	})
 	if(result.status === 403) {
-		throw new AuthError("You do not have access to view this user. (403 Forbidden)");
+		throw new ApiGetError("You do not have access to view this user. (403 Forbidden)");
 	}
 	else if(result.status !== 200) {
-		throw new AuthError("We were unable to get information about this user.");
+		throw new ApiGetError("We were unable to get information about this user.");
 	}
 
 	return await result.json() as FullUser;
@@ -259,16 +259,20 @@ const response = await fetch(`${getApiServer()}/user/${uuid}`, {
 		birthdate,
 		gender
 	})})
-	if (!response.ok) {
+	if (response.status === 403) {
+		throw new ApiPatchError("You do not have access to edit user information. (403 Forbidden)")
+	} 
+	else if (response.status !== 200) {
 		let error = ""
 		try {
 			error = (await response.json())['error'];
+			throw new ApiPatchError(error);
 		} catch (e) {
-			throw new ApiPutError('Unable to modify user.');
+			throw new ApiPatchError('Unable to modify user.');
 		}
-		throw new ApiPutError(error);
-	} else {
-		return await response.json() as BasicUserWithSecretFields;
+	} 
+	else {
+		return await response.json();
 	}
 }
 
@@ -281,10 +285,10 @@ export const getUserActivationState = async (uuid: string) => {
 		}
 	})
 	if(result.status === 403) {
-		throw new AuthError("You do not have access to view a user's activation status. (403 Forbidden)");
+		throw new ApiGetError("You do not have access to view a user's activation status. (403 Forbidden)");
 	}
 	else if(result.status !== 200) {
-		throw new AuthError("We were unable to get this user's activation status.");
+		throw new ApiGetError("We were unable to get this user's activation status.");
 	}
 
 	return (await result.json()).activated as boolean;

@@ -1,6 +1,6 @@
 import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
-import {ApiDeleteError, ApiGetError, ApiPutError} from "../errors";
+import {ApiDeleteError, ApiGetError, ApiPatchError, ApiPutError} from "../errors";
 
 interface AgendaEntry {
     uuid: string;
@@ -116,15 +116,19 @@ export const modifyAgendaEntry = async (
             deviating_time
         })
     })
-    if (!response.ok) {
+    if (response.status === 403) {
+        throw new ApiPatchError("You do not have access to edit this agenda entry. (403 Forbidden)")
+    } 
+    else if(response.status !== 200) {
         let error = ""
         try {
             error = (await response.json())['error'];
+            throw new ApiPatchError(error);
         } catch (e) {
             throw new ApiPutError('Unable to modify requested agenda entry.');
         }
-        throw new ApiPutError(error);
-    } else {
+    } 
+    else {
         return await response.json() as AgendaEntry;
     }
 }
