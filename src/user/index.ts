@@ -263,13 +263,7 @@ const response = await fetch(`${getApiServer()}/user/${uuid}`, {
 		throw new ApiPatchError("You do not have access to edit user information. (403 Forbidden)")
 	} 
 	else if (response.status !== 200) {
-		let error = ""
-		try {
-			error = (await response.json())['error'];
-			throw new ApiPatchError(error);
-		} catch (e) {
-			throw new ApiPatchError('Unable to modify user.');
-		}
+		throw new ApiPatchError((await response.json())['error']);
 	} 
 	else {
 		return await response.json();
