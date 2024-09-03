@@ -117,9 +117,9 @@ export const modifyAgendaEntry = async (
         })
     })
     if (response.status === 403) {
-        throw new ApiPatchError("You do not have access to edit this agenda entry. (403 Forbidden)")
+        throw new ApiPatchError("You do not have access to edit this agenda entry.")
     } 
-    else if (response.status !== 200) {
+    else if (!response.ok) {
 		throw new ApiPatchError((await response.json())['error']);
 	} 
     else {
