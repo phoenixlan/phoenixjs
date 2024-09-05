@@ -2,7 +2,7 @@ import * as Oauth from './oauth'
 
 
 import { getApiServer } from '../meta/api';
-import {ApiGetError, AuthError} from "../errors";
+import {ApiGetError, AuthError, ApiPutError, ApiPatchError} from "../errors";
 
 import {Avatar} from '../avatar';
 import { FullTicket, FullTicketTransfer } from "../ticket";
@@ -77,7 +77,7 @@ export const getFriendships = async (uuid: string): Promise<Array<Friendship>> =
 		},
 	});
 
-	if (response.status !== 200) {
+	if (!response.ok) {
 		throw new ApiGetError("Unable to get the user's active friendships");
 	}
 
@@ -93,7 +93,7 @@ export const getFriendRequests = async (uuid: string): Promise<Array<Friendship>
 		},
 	});
 
-	if (response.status !== 200) {
+	if (!response.ok) {
 		throw new ApiGetError("Unable to get the user's active friend requests");
 	}
 
@@ -109,7 +109,7 @@ export const getOwnedTickets = async (uuid: string): Promise<Array<FullTicket>> 
 		},
 	});
 
-	if (response.status !== 200) {
+	if (!response.ok) {
 		throw new ApiGetError("Unable to get the user's tickets");
 	}
 
@@ -125,7 +125,7 @@ export const getPurchasedTickets = async (uuid: string): Promise<Array<FullTicke
 		},
 	});
 
-	if (response.status !== 200) {
+	if (!response.ok) {
 		throw new ApiGetError("Unable to get the user's tickets");
 	}
 
@@ -141,7 +141,7 @@ export const getTicketVouchers = async (uuid: string): Promise<Array<BasicTicket
 		},
 	});
 
-	if (response.status !== 200) {
+	if (!response.ok) {
 		throw new ApiGetError("Unable to get the user's ticket_vouchers");
 	}
 
@@ -157,7 +157,7 @@ export const getTicketTransfers = async (uuid: string): Promise<Array<FullTicket
 		},
 	});
 
-	if (response.status !== 200) {
+	if (!response.ok) {
 		throw new ApiGetError("Unable to get ticket transfers");
 	}
 
@@ -172,7 +172,7 @@ export const getSeatableTickets = async (uuid: string, event_uuid?: string): Pro
 		},
 	});
 
-	if (response.status !== 200) {
+	if (!response.ok) {
 		throw new ApiGetError("Unable to get seatable tickets");
 	}
 
@@ -180,129 +180,161 @@ export const getSeatableTickets = async (uuid: string, event_uuid?: string): Pro
 };
 
 export const getAuthenticatedUser = async () => {
-	const result = await fetch(`${getApiServer()}/user/current`, {
+	const response = await fetch(`${getApiServer()}/user/current`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 			...(await Oauth.getAuthHeaders())
 		}
 	})
-	if(result.status !== 200) {
+	if(!response.ok) {
 		throw new AuthError("Unable to get current user");
 	}
 
-	return await result.json() as FullUser;
+	return await response.json() as FullUser;
 }
 
 export const getUserMembershipStatus = async (uuid: string, year?: number) => {
-	const result = await fetch(`${getApiServer()}/user/${uuid}/membership${year?'?year='+year:""}`, {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/membership${year?'?year='+year:""}`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 			...(await Oauth.getAuthHeaders())
 		}
 	})
-	if(result.status !== 200) {
+	if(!response.ok) {
 		throw new AuthError("Unable to get membership status");
 	}
 
-	return (await result.json()).is_member as boolean;
+	return (await response.json()).is_member as boolean;
 }
 
 export const getUser = async (uuid: string) => {
-	const result = await fetch(`${getApiServer()}/user/${uuid}`, {
+	const response = await fetch(`${getApiServer()}/user/${uuid}`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 			...(await Oauth.getAuthHeaders())
 		}
 	})
-	if(result.status !== 200) {
-		throw new AuthError("Unable to get user");
+	if(response.status === 403) {
+		throw new ApiGetError("You do not have access to view this user.");
+	}
+	else if(!response.ok) {
+		throw new ApiGetError("We were unable to get information about this user.");
 	}
 
-	return await result.json() as FullUser;
+	return await response.json() as FullUser;
+}
+
+type ModifyUserKeys = "firstname" | "lastname" | "username" | "email" | "phone" | "guardian_phone" | "address" | "postal_code" | "birthdate" | "gender";
+export const modifyUser = async (
+    uuid: string,
+    values?: Record<ModifyUserKeys, string>) => {
+	const response = await fetch(`${getApiServer()}/user/${uuid}`, {
+	method: 'PATCH',
+	headers: {
+		'Content-Type': 'application/json',
+		...(await Oauth.getAuthHeaders())
+	},
+	body: JSON.stringify({
+		uuid,
+		...values
+	})})
+	
+	if (response.status === 403) {
+		throw new ApiPatchError("You do not have access to edit user information.")
+	} 
+	else if (!response.ok) {
+		throw new ApiPatchError((await response.json())['error']);
+	} 
+	else {
+		return await response.json();
+	}
 }
 
 export const getUserActivationState = async (uuid: string) => {
-	const result = await fetch(`${getApiServer()}/user/${uuid}/activation`, {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/activation`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 			...(await Oauth.getAuthHeaders())
 		}
 	})
-	if(result.status !== 200) {
-		throw new AuthError("Unable to get authentication token");
+	if(response.status === 403) {
+		throw new ApiGetError("You do not have access to view a user's activation status.");
+	}
+	else if(!response.ok) {
+		throw new ApiGetError("We were unable to get this user's activation status.");
 	}
 
-	return (await result.json()).activated as boolean;
+	return (await response.json()).activated as boolean;
 }
 
 export const activateUser = async (uuid: string) => {
-	const result = await fetch(`${getApiServer()}/user/${uuid}/activation`, {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/activation`, {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
 			...(await Oauth.getAuthHeaders())
 		}
 	})
-	if(result.status !== 200) {
-		throw new AuthError("Unable to get authentication token");
+	if(!response.ok) {
+		throw new AuthError("Unable to activate this user.");
 	}
 }
 
 export const searchUsers = async (query: string) => {
-	const result = await fetch(`${getApiServer()}/user/search?query=${encodeURIComponent(query)}`, {
+	const response = await fetch(`${getApiServer()}/user/search?query=${encodeURIComponent(query)}`, {
 		method: 'GET',
 		headers: {
 			...(await Oauth.getAuthHeaders())
 		}
 	})
-	if(result.status !== 200) {
+	if(!response.ok) {
 		throw new AuthError("Unable to search");
 	}
 
-	return await result.json() as Array<BasicUser>;
+	return await response.json() as Array<BasicUser>;
 }
 
 // TODO add users
 export const getUsers = async () => {
-	const result = await fetch(`${getApiServer()}/user`, {
+	const response = await fetch(`${getApiServer()}/user`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 			...(await Oauth.getAuthHeaders())
 		}
 	})
-	if(result.status !== 200) {
+	if(!response.ok) {
 		throw new AuthError("Unable to get users");
 	}
 
-	return await result.json() as BasicUser[];
+	return await response.json() as BasicUser[];
 }
 
 export const createDiscordMappingOauthUrl = async (uuid: string) => {
-	const result = await fetch(`${getApiServer()}/user/${uuid}/discord_mapping`, {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/discord_mapping`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 			...(await Oauth.getAuthHeaders())
 		}
 	})
-	if(!result.ok) {
+	if(!response.ok) {
 		try {
-			throw new ApiGetError((await result.json())['error']);
+			throw new ApiGetError((await response.json())['error']);
 		} catch (e) {
 			throw new ApiGetError("Unable to create discord mapping");
 		}
 	}
 
-	return await result.json() as DiscordMappingCreationInformation;
+	return await response.json() as DiscordMappingCreationInformation;
 }
 
 export const revokeDiscordMapping = async (uuid: string) => {
-	const result = await fetch(`${getApiServer()}/user/${uuid}/discord_mapping`, {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/discord_mapping`, {
 		method: 'DELETE',
 		headers: {
 			'Content-Type': 'application/json',
@@ -310,38 +342,38 @@ export const revokeDiscordMapping = async (uuid: string) => {
 		}
 	})
 
-	if(!result.ok) {
+	if(!response.ok) {
 		throw new ApiGetError("Unable to revoke Discord mapping");
 	}
 }
 
 export const getDiscordMapping = async (uuid: string) => {
-	const result = await fetch(`${getApiServer()}/user/${uuid}/discord_mapping`, {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/discord_mapping`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 			...(await Oauth.getAuthHeaders())
 		}
 	})
-	if(result.status === 404) {
+	if(response.status === 404) {
 		return null;
 	}
 
-	if(!result.ok) {
+	if(!response.ok) {
 		throw new ApiGetError("Unable to get discord mapping");
 	}
 
-	return await result.json() as DiscordMapping;
+	return await response.json() as DiscordMapping;
 }
 
 export const getCrewCard = async (uuid: string) => {
-	const result = await fetch(`${getApiServer()}/user/${uuid}/crew_card`, {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/crew_card`, {
 		method: "GET",
 		headers: {
 			...(await Oauth.getAuthHeaders())
 		}
 	})
-	return result
+	return response
 }
 
 export const getAuthenticationUrl = (callback: string, clientId: string) => {

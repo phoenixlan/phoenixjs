@@ -1,6 +1,6 @@
 import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
-import {ApiDeleteError, ApiGetError, ApiPutError} from "../errors";
+import {ApiDeleteError, ApiGetError, ApiPatchError, ApiPutError} from "../errors";
 
 interface AgendaEntry {
     uuid: string;
@@ -45,6 +45,7 @@ export const createAgendaEntry = async (
         description: string, 
         location: string, 
         time: number, 
+        duration: number,
         pinned: boolean
     ) => {
     const response = await fetch(`${getApiServer()}/agenda`, {
@@ -59,6 +60,7 @@ export const createAgendaEntry = async (
             description,
             location,
             time,
+            duration,
             pinned
         })
     })
@@ -83,13 +85,14 @@ export const modifyAgendaEntry = async (
         title: string, 
         description: string, 
         time: number,
+        duration: number,
         location: string,
         deviating_time_unknown: boolean,
         deviating_location: string,
         deviating_information: string,
         pinned: boolean,
         cancelled: boolean,
-        deviating_time?: number,
+        deviating_time?: number
     ) => {
     const response = await fetch(`${getApiServer()}/agenda/${uuid}`, {
         method: 'PATCH',
@@ -103,6 +106,7 @@ export const modifyAgendaEntry = async (
             title,
             description,
             time,
+            duration,
             location,
             deviating_time_unknown,
             deviating_location,
@@ -112,15 +116,13 @@ export const modifyAgendaEntry = async (
             deviating_time
         })
     })
-    if (!response.ok) {
-        let error = ""
-        try {
-            error = (await response.json())['error'];
-        } catch (e) {
-            throw new ApiPutError('Unable to modify requested agenda entry.');
-        }
-        throw new ApiPutError(error);
-    } else {
+    if (response.status === 403) {
+        throw new ApiPatchError("You do not have access to edit this agenda entry.")
+    } 
+    else if (!response.ok) {
+		throw new ApiPatchError((await response.json())['error']);
+	} 
+    else {
         return await response.json() as AgendaEntry;
     }
 }
