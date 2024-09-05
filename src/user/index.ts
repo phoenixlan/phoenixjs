@@ -227,20 +227,11 @@ export const getUser = async (uuid: string) => {
 	return await response.json() as FullUser;
 }
 
+type ModifyUserKeys = "firstname" | "lastname" | "username" | "email" | "phone" | "guardian_phone" | "address" | "postal_code" | "birthdate" | "gender";
 export const modifyUser = async (
-	uuid: string,
-	firstname?: string, 
-	lastname?: string, 
-	username?: string, 
-	email?: string, 
-	phone?: string,
-	guardian_phone?: string,
-	address?: string,
-	postal_code?: string,
-	birthdate?: string,
-	gender?: string,
-) => {
-const response = await fetch(`${getApiServer()}/user/${uuid}`, {
+    uuid: string,
+    values?: Record<ModifyUserKeys, string>) => {
+	const response = await fetch(`${getApiServer()}/user/${uuid}`, {
 	method: 'PATCH',
 	headers: {
 		'Content-Type': 'application/json',
@@ -248,17 +239,9 @@ const response = await fetch(`${getApiServer()}/user/${uuid}`, {
 	},
 	body: JSON.stringify({
 		uuid,
-		firstname, 
-		lastname, 
-		username, 
-		email, 
-		phone,
-		guardian_phone,
-		address,
-		postal_code,
-		birthdate,
-		gender
+		...values
 	})})
+	
 	if (response.status === 403) {
 		throw new ApiPatchError("You do not have access to edit user information.")
 	} 
