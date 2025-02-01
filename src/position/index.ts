@@ -73,7 +73,9 @@ export const createPosition = async (name: string, description: string, chief: b
         })
     });
 
-    if (!response.ok) {
+    if(response.status === 403) {
+        throw new ApiPostError('You do not have access to create a new position.')
+    } else if (!response.ok) {
         let error = ""
         try {
             error = (await response.json())['error']
