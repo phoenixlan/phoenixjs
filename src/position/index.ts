@@ -57,7 +57,7 @@ export const getPositions = async () => {
     return (await response.json()) as Array<BasicPosition>;
 }
 
-export const createPosition = async (name: string, description: string, crew_uuid?: string, team_uuid?: string) => {
+export const createPosition = async (name: string, description: string, chief: boolean, is_vanity: boolean, crew_uuid?: string, team_uuid?: string) => {
     const response = await fetch(`${getApiServer()}/position/`, {
         method: 'POST',
         headers: {
@@ -66,6 +66,8 @@ export const createPosition = async (name: string, description: string, crew_uui
         body: JSON.stringify({
             name,
             description,
+            chief,
+            is_vanity,
             crew_uuid,
             team_uuid
         })
