@@ -3,8 +3,11 @@ import jwt_decode from "jwt-decode";
 import { getApiServer } from '../../meta/api';
 import {AuthError, RefreshError} from "../../errors";
 
+type TokensUpdatedCallback = (new_access_token: string, new_refresh_token: string) => void;
+
 let TOKEN = "";
 let REFRESH_TOKEN = "";
+let ON_TOKENS_UPDATED: TokensUpdatedCallback|null = null;
 
 export interface JWTPayload {
 	sub: string;
@@ -36,6 +39,10 @@ export const authenticateByCode = async (code: string) => {
 
 	TOKEN = response.access_token;
 	REFRESH_TOKEN = response.refresh_token;
+
+	if(ON_TOKENS_UPDATED) {
+		ON_TOKENS_UPDATED(TOKEN, REFRESH_TOKEN);
+	}
 	return true;
 }
 
@@ -55,7 +62,14 @@ const refreshToken = async () => {
 	const tokens = await result.json();
 
 	TOKEN = tokens.access_token;
-	REFRESH_TOKEN = tokens.refresh_token;
+
+	if(tokens.refresh_token) {
+		console.log("New refresh token too")
+		REFRESH_TOKEN = tokens.refresh_token;
+	}
+	if(ON_TOKENS_UPDATED) {
+		ON_TOKENS_UPDATED(TOKEN, REFRESH_TOKEN);
+	}
 }
 
 const checkExpiry = (token: JWTPayload) => {
@@ -99,10 +113,15 @@ export const getRefreshToken = async () => {
 }
 
 export const setAuthState = async (token: string|undefined, refreshToken: string) => {
+	console.log(`Received auth state: ${token} refresn ${refreshToken}`)
 	TOKEN = token ?? "";
 	REFRESH_TOKEN = refreshToken;
 
 	await getToken();
+}
+
+export const setTokensUpdateCallback = (onTokensUpdatedCallback: TokensUpdatedCallback) => {
+	ON_TOKENS_UPDATED = onTokensUpdatedCallback;
 }
 
 export const getTokenPayload = async () => {

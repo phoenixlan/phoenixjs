@@ -18,3 +18,5 @@ export * from './payment';
 export * as Agenda from './agenda';
 export * as Email from "./email";
 export * as Friendship from './friend_request';
+
+export const PHOENIX_FLAG = "PHOENIX{n07h1n6_0n_617hub}"
