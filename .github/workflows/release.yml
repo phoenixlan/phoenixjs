@@ -1,12 +1,17 @@
 name: Release new version
 on: workflow_dispatch 
 jobs:
-  date:
+  release:
     runs-on: ubuntu-latest
     steps:
       # Checkout the branch
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+      - name: Determine version
+        run: git describe
+      - name: jq test
+        run: jq --help
+      
 
       - name: save current date
         run: |
