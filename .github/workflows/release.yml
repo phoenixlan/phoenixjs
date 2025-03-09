@@ -11,7 +11,7 @@ jobs:
           fetch-depth: 0
 
       - name: Patch package.json
-        run: git describe --tags --abbrev=0 | xargs -I '{}' sh -c 'jq ".version = {}" package.json > package.json.tmp && mv package.json.tmp package.json'
+        run: "git describe --tags --abbrev=0 | xargs -I '{}' sh -c 'jq \".version = {}\" package.json > package.json.tmp && mv package.json.tmp package.json'"
 
       - name: setup git config
         run: |
