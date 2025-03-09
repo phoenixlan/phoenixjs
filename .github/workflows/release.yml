@@ -7,6 +7,8 @@ jobs:
       # Checkout the branch
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          fetch-tags: true
       - name: Determine version
         run: git describe
       - name: jq test
