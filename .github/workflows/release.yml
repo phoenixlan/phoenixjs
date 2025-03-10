@@ -32,4 +32,4 @@ jobs:
 
       - name: commit
         run: |
-          git push origin master --all
+          git push -u origin/master
