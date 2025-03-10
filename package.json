@@ -8,6 +8,9 @@
   "author": "petterroea et al",
   "license": "GPL",
   "private": false,
+  "repository": {
+    "url": "https://github.com/phoenixlan/phoenixjs"
+  },
   "scripts": {
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable",
