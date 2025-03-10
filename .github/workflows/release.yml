@@ -32,7 +32,4 @@ jobs:
 
       - name: commit
         run: |
-          # Stage the file, commit and push
-          git add package.json
-          git commit -m "Release new version to NPM"
           git push origin master
