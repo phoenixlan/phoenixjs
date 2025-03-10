@@ -1,5 +1,16 @@
 name: Release new version
-on: workflow_dispatch 
+on: 
+  workflow_dispatch :
+    inputs:
+      level:
+        description: 'Level to bump'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -11,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: Patch package.json
-        run: "git describe --tags --abbrev=0 | xargs -I '{}' sh -c 'jq \".version = {}\" package.json > package.json.tmp && mv package.json.tmp package.json'"
+        run: npm version ${{ inputs.level }}
 
       - name: setup git config
         run: |
