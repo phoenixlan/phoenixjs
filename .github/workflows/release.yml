@@ -44,7 +44,7 @@ jobs:
         run: yarn
       - name: Build PhoenixJS
         run: npm run build
-      - run: npm publish --provenance
+      - run: npm publish
       - name: commit
         run: |
           git push --all
