@@ -8,6 +8,7 @@ export interface TicketType {
     price: number;
     refundable: boolean;
     seatable: boolean;
+    grants_admission: boolean;
     description: string | null;
     grants_membership: boolean;
     requires_membership: boolean;
