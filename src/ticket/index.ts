@@ -41,6 +41,10 @@ export type FullTicketTransfer = {
     ticket: FullTicket;
 } & BaseTicketTransfer;
 
+export interface TicketTotp {
+    totp: string;
+}
+
 export const getTicket = async (ticket_id: number): Promise<FullTicket> => {
     const response = await fetch(`${getApiServer()}/ticket/${ticket_id}`, {
         method: 'GET',
@@ -61,6 +65,29 @@ export const getTicket = async (ticket_id: number): Promise<FullTicket> => {
         throw new ApiGetError(error);
     }
     return await response.json() as FullTicket
+}
+
+
+export const getTicketTotp = async (ticket_id: number): Promise<TicketTotp> => {
+    const response = await fetch(`${getApiServer()}/ticket/${ticket_id}/totp`, {
+        method: 'GET',
+        headers: {
+            "Content-Type": "application/json",
+            ...(await Oauth.getAuthHeaders()),
+        }
+    });
+
+    if (!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json())['error']
+        } catch (e) {
+            throw new ApiGetError('Unable to get ticket totp');
+        }
+
+        throw new ApiGetError(error);
+    }
+    return await response.json() as TicketTotp 
 }
 
 export const transferTicket = async (ticket_id: number, userEmail: string) => {
