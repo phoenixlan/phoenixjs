@@ -83,11 +83,11 @@ export const modifyEvent = async (
         ...values
     })})
     
-    if (response.status === 403) {
-        throw new ApiPatchError("You do not have access to edit event information.")
-    } 
-    else if (!response.ok) {
+    if (!response.ok) {
         throw new ApiPatchError((await response.json())['error']);
+    } 
+    else if (response.status === 403) {
+        throw new ApiPatchError("You do not have access to edit event information. If you believe you are supposed to have access to this, try logging out and back in.")
     } 
     else {
         return await response.json();
