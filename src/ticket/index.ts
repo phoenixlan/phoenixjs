@@ -45,8 +45,8 @@ export interface TicketTotp {
     totp: string;
 }
 
-export const getTicket = async (ticket_id: number): Promise<FullTicket> => {
-    const response = await fetch(`${getApiServer()}/ticket/${ticket_id}`, {
+export const getTicket = async (ticket_id: number, totp?: string): Promise<FullTicket> => {
+    const response = await fetch(`${getApiServer()}/ticket/${ticket_id}${totp?"?totp="+totp:""}`, {
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
@@ -157,8 +157,8 @@ export const getTransferLog = async (ticket_id: number) => {
     }
 }
 
-export const checkInTicket = async (ticket_id: number) => {
-    const response = await fetch(`${getApiServer()}/ticket/${ticket_id}/check_in`, {
+export const checkInTicket = async (ticket_id: number, totp?: string) => {
+    const response = await fetch(`${getApiServer()}/ticket/${ticket_id}/check_in${totp?"?totp="+totp:""}`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
