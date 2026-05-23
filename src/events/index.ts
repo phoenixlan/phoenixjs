@@ -21,6 +21,11 @@ export interface Event {
     uuid: string;
 }
 
+export interface TicketAvailability {
+    total: number;
+}
+
+
 
 export const getCurrentEvent = async (): Promise<Event> => {
     const response = await fetch(`${getApiServer()}/event/current`, {
@@ -144,6 +149,21 @@ export const getEventTickets = async (uuid: string): Promise<Array<BasicTicket>>
     }
 
     return (await response.json()) as Array<BasicTicket>;
+};
+
+export const getEventTicketAvailability = async (uuid: string): Promise<TicketAvailability> => {
+    const response = await fetch(`${getApiServer()}/event/${uuid}/ticket_availability`, {
+        method: 'GET',
+        headers: {
+            ...(await Oauth.getAuthHeaders()),
+        }
+    });
+
+    if (response.status !== 200) {
+        throw new ApiGetError("Unable to get ticket availability");
+    }
+
+    return (await response.json()) as TicketAvailability;
 };
 
 export const getApplicationsByEvent = async (event_uuid: string): Promise<Array<BasicApplication>> => {
