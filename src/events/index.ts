@@ -1,5 +1,5 @@
 import {getApiServer} from "../meta";
-import {ApiGetError} from "../errors";
+import {ApiGetError, ApiPatchError} from "../errors";
 import { BasicUserWithSecretFields, Oauth } from "../user";
 import { BasicTicket } from "../ticket";
 import { TicketType } from "../ticketType";
@@ -47,6 +47,7 @@ export const getEvents = async (): Promise<Array<Event>> => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
@@ -71,6 +72,32 @@ export const getEvent = async (uuid: string): Promise<Event> => {
 
     return (await response.json()) as Event;
 };
+
+type ModifyEventKeys = "name" | "start_time" | "end_time" | "booking_time" | "priority_seating_time_delta" | "seating_time_delta" | "max_participants" | "participant_age_limit_inclusive" | "crew_age_limit_inclusive" | "theme" | "location" | "cancellation_reason";
+export const modifyEvent = async (
+    uuid: string,
+    values?: Record<ModifyEventKeys, string>) => {
+    const response = await fetch(`${getApiServer()}/event/${uuid}/edit`, {
+    method: 'PATCH',
+    headers: {
+        'Content-Type': 'application/json',
+        ...(await Oauth.getAuthHeaders())
+    },
+    body: JSON.stringify({
+        uuid,
+        ...values
+    })})
+    
+    if (!response.ok) {
+        throw new ApiPatchError((await response.json())['error']);
+    } 
+    else if (response.status === 403) {
+        throw new ApiPatchError("You do not have access to edit event information. If you believe you are supposed to have access to this, try logging out and back in.")
+    } 
+    else {
+        return await response.json();
+    }
+}
 
 export const getEventTicketTypes = async (uuid: string): Promise<Array<TicketType>> => {
     const response = await fetch(`${getApiServer()}/event/${uuid}/ticketType`, {
