@@ -12,10 +12,12 @@ interface SeatmapBase {
 
 interface SeatmapBackground {
     uuid: string;
+    event_brand_uuid: string;
     url: string;
 }
 
 export type Seatmap = {
+    event_brand_uuid: string;
     name: string;
     description: string;
     background: SeatmapBackground|null;
@@ -28,7 +30,7 @@ export type SeatmapAvailability = {
     rows: Array<AvailabilityRow>;
 } & SeatmapBase;
 
-export const createSeatmap = async (name: string, description: string) => {
+export const createSeatmap = async (event_brand_uuid: string, name: string, description: string) => {
     const response = await fetch(`${getApiServer()}/seatmap`, {
         method: 'PUT',
         headers: {
@@ -37,7 +39,8 @@ export const createSeatmap = async (name: string, description: string) => {
         },
         body: JSON.stringify({
             name,
-            description
+            description,
+            event_brand_uuid
         })
     });
 
@@ -62,8 +65,8 @@ export const getSeatmap = async (uuid: string) => {
     return (await response.json()) as Seatmap;
 }
 
-export const getSeatmapAvailability = async (uuid: string) => {
-    const response = await fetch(`${getApiServer()}/seatmap/${uuid}/availability`, {
+export const getSeatmapAvailability = async (uuid: string, event_uuid: string) => {
+    const response = await fetch(`${getApiServer()}/seatmap/${uuid}/availability?event_uuid=${encodeURIComponent(event_uuid)}`, {
         method: 'GET',
         headers: {
             ...(await Oauth.getAuthHeaders()),
@@ -79,6 +82,21 @@ export const getSeatmapAvailability = async (uuid: string) => {
 
 export const getSeatmaps = async () => {
     const response = await fetch(`${getApiServer()}/seatmap/`, {
+        method: 'GET',
+        headers: {
+            ...(await Oauth.getAuthHeaders()),
+        },
+    });
+
+    if (!response.ok) {
+        throw new ApiGetError('Unable to get seatmaps');
+    }
+
+    return (await response.json()) as Array<Seatmap>;
+}
+
+export const getBrandSeatmaps = async (event_brand_uuid: string) => {
+    const response = await fetch(`${getApiServer()}/event_brand/${event_brand_uuid}/seatmap`, {
         method: 'GET',
         headers: {
             ...(await Oauth.getAuthHeaders()),

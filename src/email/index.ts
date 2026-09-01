@@ -2,13 +2,14 @@ import { getApiServer } from "../meta";
 import { BasicUser, Oauth } from "../user";
 import { ApiGetError, ApiPostError, ApiPutError } from "../errors";
 
-export const emailDryrun = async (recipient_category: string, subject: string, body: string, argument?: string) => {
+export const emailDryrun = async (brand_uuid: string, recipient_category: string, subject: string, body: string, argument?: string) => {
     const response = await fetch(`${getApiServer()}/email/dryrun`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
             ...(await Oauth.getAuthHeaders()),
         }, body: JSON.stringify({
+            brand_uuid,
             recipient_category,
             subject,
             body,
@@ -28,13 +29,14 @@ export const emailDryrun = async (recipient_category: string, subject: string, b
     return await response.json()
 }
 
-export const sendEmails = async (recipient_category: string, subject: string, body: string, argument?: string) => {
+export const sendEmails = async (brand_uuid: string, recipient_category: string, subject: string, body: string, argument?: string) => {
     const response = await fetch(`${getApiServer()}/email/send`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
             ...(await Oauth.getAuthHeaders()),
         }, body: JSON.stringify({
+            brand_uuid,
             recipient_category,
             subject,
             body,

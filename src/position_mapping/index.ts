@@ -48,8 +48,8 @@ export const deletePositionMapping = async (position_mapping_uuid: string) => {
 
     return true;
 }
-export const createPositionMapping = async (user_uuid: string, position_uuid: string) => {
-    const response = await fetch(`${getApiServer()}/position_mapping/`, {
+export const createPositionMapping = async (event_uuid: string, user_uuid: string, position_uuid: string) => {
+    const response = await fetch(`${getApiServer()}/event/${event_uuid}/position_mapping`, {
         method: 'POST',
         headers: {
             ...(await Oauth.getAuthHeaders()),

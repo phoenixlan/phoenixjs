@@ -28,6 +28,7 @@ export interface StoreSession {
     expires: number,
     total: number,
     user_uuid: string,
+    event_uuid: string,
     uuid: string,
 }
 
@@ -46,8 +47,8 @@ export const getActiveStoreSessions = async () => {
     return (await response.json()) as Array<StoreSession>;
 }
 
-export const createStoreSession = async (data: Cart) => {
-    const response = await fetch(`${getApiServer()}/store_session`, {
+export const createStoreSession = async (event_uuid: string, data: Cart) => {
+    const response = await fetch(`${getApiServer()}/event/${event_uuid}/store_session`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

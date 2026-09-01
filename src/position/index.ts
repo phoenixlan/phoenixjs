@@ -20,6 +20,7 @@ export interface Permission {
 }
 
 export type BasicPosition = {
+    event_brand_uuid: string,
     position_mappings: Array<SimplePositionMapping>,
 } & BasePosition
 
@@ -57,7 +58,7 @@ export const getPositions = async () => {
     return (await response.json()) as Array<BasicPosition>;
 }
 
-export const createPosition = async (name: string, description: string, chief: boolean, is_vanity: boolean, crew_uuid?: string, team_uuid?: string) => {
+export const createPosition = async (name: string, description: string, chief: boolean, is_vanity: boolean, crew_uuid?: string, team_uuid?: string, event_brand_uuid?: string) => {
     const response = await fetch(`${getApiServer()}/position/`, {
         method: 'POST',
         headers: {
@@ -69,7 +70,8 @@ export const createPosition = async (name: string, description: string, chief: b
             chief,
             is_vanity,
             crew_uuid,
-            team_uuid
+            team_uuid,
+            ...(event_brand_uuid ? { event_brand_uuid } : {})
         })
     });
 
@@ -86,5 +88,5 @@ export const createPosition = async (name: string, description: string, chief: b
         throw new ApiPostError(error);
     }
 
-    return (await response.json()) as FullPosition;
+    return (await response.json()) as BasicPosition;
 }
