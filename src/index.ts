@@ -14,7 +14,6 @@ export * as TicketType from './ticketType';
 export * as TicketVoucher from './ticketVoucher';
 export * as Ticket from './ticket';
 export * as Row from './row';
-export * as Statistics from './statistics';
 export * from './payment';
 export * as Agenda from './agenda';
 export * as Email from "./email";

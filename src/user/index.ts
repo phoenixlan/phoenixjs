@@ -282,22 +282,6 @@ export const searchUsers = async (query: string) => {
 	return await response.json() as Array<BasicUser>;
 }
 
-// TODO add users
-export const getUsers = async () => {
-	const response = await fetch(`${getApiServer()}/user`, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-			...(await Oauth.getAuthHeaders())
-		}
-	})
-	if(!response.ok) {
-		throw new AuthError("Unable to get users");
-	}
-
-	return await response.json() as BasicUser[];
-}
-
 export const createDiscordMappingOauthUrl = async (uuid: string) => {
 	const response = await fetch(`${getApiServer()}/user/${uuid}/discord_mapping`, {
 		method: 'POST',
