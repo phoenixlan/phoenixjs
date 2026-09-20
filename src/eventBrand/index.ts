@@ -8,6 +8,7 @@ import { BaseCrew, FullCrew } from "../crew";
 export interface EventBrand {
     uuid: string;
     name: string;
+    contact_email: string;
 }
 
 export const getEventBrands = async (): Promise<Array<EventBrand>> => {
@@ -71,7 +72,7 @@ export const getCrews = async (uuid: string): Promise<Array<BaseCrew>> => {
     return (await response.json()) as Array<BaseCrew>;
 };
 
-export const createEventBrand = async (name: string): Promise<EventBrand> => {
+export const createEventBrand = async (name: string, contact_email: string): Promise<EventBrand> => {
     const response = await fetch(`${getApiServer()}/event_brand`, {
         method: 'POST',
         headers: {
@@ -79,7 +80,8 @@ export const createEventBrand = async (name: string): Promise<EventBrand> => {
             ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
-            name
+            name,
+            contact_email
         })
     });
 
@@ -97,7 +99,7 @@ export const createEventBrand = async (name: string): Promise<EventBrand> => {
     return (await response.json()) as EventBrand;
 }
 
-export const createCrew = async (name: string, description: string, hex_color: string, event_brand_uuid: string): Promise<EventBrand> => {
+export const createCrew = async (name: string, description: string, hex_color: string, event_brand_uuid: string): Promise<FullCrew> => {
     const response = await fetch(`${getApiServer()}/event_brand/${event_brand_uuid}/crew`, {
         method: 'POST',
         headers: {
