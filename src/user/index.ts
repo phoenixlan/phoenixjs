@@ -84,22 +84,6 @@ export const getFriendships = async (uuid: string): Promise<Array<Friendship>> =
 	return (await response.json()) as Array<Friendship>;
 };
 
-export const getFriendRequests = async (uuid: string): Promise<Array<Friendship>> => {
-	const response = await fetch(`${getApiServer()}/user/${uuid}/friend_requests`, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-			...(await Oauth.getAuthHeaders())
-		},
-	});
-
-	if (!response.ok) {
-		throw new ApiGetError("Unable to get the user's active friend requests");
-	}
-
-	return (await response.json()) as Array<Friendship>;
-};
-
 export const getOwnedTickets = async (uuid: string): Promise<Array<FullTicket>> => {
 	const response = await fetch(`${getApiServer()}/user/${uuid}/owned_tickets`, {
 		method: 'GET',
@@ -148,8 +132,8 @@ export const getTicketVouchers = async (uuid: string): Promise<Array<BasicTicket
 	return (await response.json()) as Array<BasicTicketVoucher>;
 };
 
-export const getTicketTransfers = async (uuid: string): Promise<Array<FullTicketTransfer>> => {
-	const response = await fetch(`${getApiServer()}/user/${uuid}/ticket_transfers`, {
+export const getTicketTransfers = async (uuid: string, event_uuid: string): Promise<Array<FullTicketTransfer>> => {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/ticket_transfers?event_uuid=${encodeURIComponent(event_uuid)}`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -298,22 +282,6 @@ export const searchUsers = async (query: string) => {
 	return await response.json() as Array<BasicUser>;
 }
 
-// TODO add users
-export const getUsers = async () => {
-	const response = await fetch(`${getApiServer()}/user`, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-			...(await Oauth.getAuthHeaders())
-		}
-	})
-	if(!response.ok) {
-		throw new AuthError("Unable to get users");
-	}
-
-	return await response.json() as BasicUser[];
-}
-
 export const createDiscordMappingOauthUrl = async (uuid: string) => {
 	const response = await fetch(`${getApiServer()}/user/${uuid}/discord_mapping`, {
 		method: 'POST',
@@ -364,16 +332,6 @@ export const getDiscordMapping = async (uuid: string) => {
 	}
 
 	return await response.json() as DiscordMapping;
-}
-
-export const getCrewCard = async (uuid: string) => {
-	const response = await fetch(`${getApiServer()}/user/${uuid}/crew_card`, {
-		method: "GET",
-		headers: {
-			...(await Oauth.getAuthHeaders())
-		}
-	})
-	return response
 }
 
 export const getAuthenticationUrl = (callback: string, clientId: string) => {

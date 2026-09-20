@@ -9,8 +9,8 @@ interface AgendaEntry {
     description: string;
 }
 
-export const getAgenda = async (): Promise<Array<AgendaEntry[]>> => {
-    const response = await fetch(`${getApiServer()}/agenda/`, {
+export const getAgenda = async (event_uuid: string): Promise<Array<AgendaEntry[]>> => {
+    const response = await fetch(`${getApiServer()}/event/${event_uuid}/agenda`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -48,14 +48,13 @@ export const createAgendaEntry = async (
         duration: number,
         pinned: boolean
     ) => {
-    const response = await fetch(`${getApiServer()}/agenda`, {
+    const response = await fetch(`${getApiServer()}/event/${event_uuid}/agenda`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             ...(await Oauth.getAuthHeaders())
         },
         body: JSON.stringify({
-            event_uuid,
             title,
             description,
             location,

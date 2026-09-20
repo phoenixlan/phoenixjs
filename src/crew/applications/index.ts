@@ -74,28 +74,6 @@ export const getApplication = async (uuid: string): Promise<BasicApplication> =>
     return (await response.json()) as BasicApplication;
 };
 
-// Scream test
-/*
-export const getAllApplicationsByEvent = async (event: Event): Promise<Array<BasicApplication>> => {
-    if (!event) {
-        throw new ApiParameterError('Event cannot be null');
-    }
-    const response = await fetch(`${getApiServer()}/event/${event.uuid}/applications`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            ...(await Oauth.getAuthHeaders()),
-        },
-    });
-
-    if (response.status !== 200) {
-        throw new ApiGetError('Unable to get applications');
-    }
-
-    return (await response.json()) as Array<BasicApplication>;
-};
-*/
-
 export const getUserApplications = async (): Promise<Array<BasicApplication>> => {
     const response = await fetch(`${getApiServer()}/application/my`, {
         method: 'GET',
@@ -112,8 +90,8 @@ export const getUserApplications = async (): Promise<Array<BasicApplication>> =>
     return (await response.json()) as Array<BasicApplication>;
 };
 
-export const createApplication = async (crews: Array<string>, contents: string): Promise<BasicApplication> => {
-    const response = await fetch(`${getApiServer()}/application`, {
+export const createApplication = async (event_uuid: string, crews: Array<string>, contents: string): Promise<BasicApplication> => {
+    const response = await fetch(`${getApiServer()}/event/${event_uuid}/application`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

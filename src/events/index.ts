@@ -1,5 +1,5 @@
 import {getApiServer} from "../meta";
-import {ApiGetError} from "../errors";
+import {ApiGetError, ApiPatchError, ApiPutError} from "../errors";
 import { BasicUserWithSecretFields, Oauth } from "../user";
 import { BasicTicket } from "../ticket";
 import { TicketType } from "../ticketType";
@@ -7,6 +7,7 @@ import { BasicApplication } from "../crew/applications";
 
 export interface Event {
     name: string;
+    event_brand_uuid: string;
     participant_age_limit_inclusive: number;
     crew_age_limit_inclusive: number;
     booking_time: number;
@@ -25,10 +26,40 @@ export interface TicketAvailability {
     total: number;
 }
 
+export interface NewEvent {
+    name: string;
+    start_time: number;
+    end_time: number;
+    booking_time: number;
+    priority_seating_time_delta: number;
+    seating_time_delta: number;
+    max_participants: number;
+
+    participant_age_limit_inclusive?: number;
+    crew_age_limit_inclusive?: number;
+    theme?: string;
+    location_uuid?: string;
+    seatmap_uuid?: string;
+}
+
+export interface EventChanges {
+    name?: string;
+    start_time?: number;
+    end_time?: number;
+    booking_time?: number;
+    priority_seating_time_delta?: number;
+    seating_time_delta?: number;
+    max_participants?: number;
+    participant_age_limit_inclusive?: number;
+    crew_age_limit_inclusive?: number;
+    theme?: string | null;
+    cancellation_reason?: string | null;
+    seatmap_uuid?: string | null;
+}
 
 
-export const getCurrentEvent = async (): Promise<Event> => {
-    const response = await fetch(`${getApiServer()}/event/current`, {
+export const getCurrentEvent = async (event_brand_uuid: string): Promise<Event | null> => {
+    const response = await fetch(`${getApiServer()}/event_brand/${event_brand_uuid}/current_event`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -37,6 +68,54 @@ export const getCurrentEvent = async (): Promise<Event> => {
 
     if (response.status !== 200) {
         throw new ApiGetError('Unable to get the current event');
+    }
+
+    return (await response.json()) as Event | null;
+};
+
+export const createEvent = async (event_brand_uuid: string, event: NewEvent): Promise<Event> => {
+    const response = await fetch(`${getApiServer()}/event_brand/${event_brand_uuid}/event`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            ...(await Oauth.getAuthHeaders()),
+        },
+        body: JSON.stringify(event)
+    });
+
+    if (!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json())['error']
+        } catch (e) {
+            throw new ApiPutError('Unable to create event');
+        }
+
+        throw new ApiPutError(error);
+    }
+
+    return (await response.json()) as Event;
+};
+
+export const updateEvent = async (uuid: string, changes: EventChanges): Promise<Event> => {
+    const response = await fetch(`${getApiServer()}/event/${uuid}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            ...(await Oauth.getAuthHeaders()),
+        },
+        body: JSON.stringify(changes)
+    });
+
+    if (!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json())['error']
+        } catch (e) {
+            throw new ApiPatchError('Unable to update event');
+        }
+
+        throw new ApiPatchError(error);
     }
 
     return (await response.json()) as Event;
@@ -106,21 +185,6 @@ export const addEventTicketType = async (event_uuid: string, ticket_type_uuid: s
     return (await response.json()) as Array<TicketType>;
 };
 
-export const getEventMembersRequiringMembership = async (uuid: string): Promise<Array<BasicUserWithSecretFields>> => {
-    const response = await fetch(`${getApiServer()}/event/${uuid}/customers_requiring_memberships`, {
-        method: 'GET',
-        headers: {
-            ...(await Oauth.getAuthHeaders()),
-        }
-    });
-
-    if (response.status !== 200) {
-        throw new ApiGetError("Unable to get customers requiring memberships");
-    }
-
-    return (await response.json()) as Array<BasicUserWithSecretFields>;
-};
-
 export const getEventNewMembers = async (uuid: string): Promise<Array<BasicUserWithSecretFields>> => {
     const response = await fetch(`${getApiServer()}/event/${uuid}/new_memberships`, {
         method: 'GET',
@@ -164,6 +228,17 @@ export const getEventTicketAvailability = async (uuid: string): Promise<TicketAv
     }
 
     return (await response.json()) as TicketAvailability;
+};
+
+export const getEventCrewCard = async (event_uuid: string, user_uuid: string) => {
+    const response = await fetch(`${getApiServer()}/event/${event_uuid}/crew_card?user_uuid=${encodeURIComponent(user_uuid)}`, {
+        method: 'GET',
+        headers: {
+            ...(await Oauth.getAuthHeaders()),
+        }
+    });
+
+    return response;
 };
 
 export const getApplicationsByEvent = async (event_uuid: string): Promise<Array<BasicApplication>> => {

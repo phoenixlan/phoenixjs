@@ -137,26 +137,6 @@ export const revertTransfer = async (uuid: string) => {
 }
 
 
-export const getTransferLog = async (ticket_id: number) => {
-    const response = await fetch(`${getApiServer()}/ticket/${ticket_id}/transfer_log`, {
-        method: 'GET',
-        headers: {
-            "Content-Type": "application/json",
-            ...(await Oauth.getAuthHeaders()),
-        }
-    });
-
-    if (response.status === 403) {
-        throw new ApiGetError("You do not have access to view ticket transfer log.")
-    } 
-    else if (!response.ok) {
-        throw new ApiGetError((await response.json())['error']);
-    } 
-    else {
-        return await response.json();
-    }
-}
-
 export const checkInTicket = async (ticket_id: number, totp?: string) => {
     const response = await fetch(`${getApiServer()}/ticket/${ticket_id}/check_in${totp?"?totp="+totp:""}`, {
         method: 'POST',
@@ -225,8 +205,8 @@ export const seatTicket = async (ticket_id: number, seatUuid: string) => {
     }
 }
 
-export const createTicket = async (recipient: string, ticketType: string) => {
-    const response = await fetch(`${getApiServer()}/ticket`, {
+export const createTicket = async (event_uuid: string, recipient: string, ticketType: string) => {
+    const response = await fetch(`${getApiServer()}/event/${event_uuid}/ticket`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
