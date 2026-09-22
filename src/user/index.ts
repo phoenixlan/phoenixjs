@@ -1,4 +1,5 @@
 import * as Oauth from './oauth'
+import * as MemberPersonalia from './member_personalia'
 
 
 import { getApiServer } from '../meta/api';
@@ -19,7 +20,6 @@ interface UserConsent {
 
 export interface BaseUser {
 	uuid: string;
-	username: string;
 	firstname: string;
 	lastname: string;
 	gender: string;
@@ -33,9 +33,6 @@ export interface BaseUser {
 export type BasicUserWithSecretFields = {
 	birthdate: string;
 	email: string;
-	phone: string;
-	address: string;
-	postal_code: string;
 } & BaseUser;
 
 export type BasicUser = {
@@ -47,10 +44,6 @@ export type BasicUserWithPositionMappings = {
 
 export type FullUser = {
 	birthdate: string;
-	phone: string;
-	address: string;
-	postal_code: string;
-	country_code: string;
 	tos_level: number;
 	position_mappings: Array<PositionFacingPositionMapping>;
 	avatar_uuid?: string;
@@ -211,7 +204,7 @@ export const getUser = async (uuid: string) => {
 	return await response.json() as FullUser;
 }
 
-type ModifyUserKeys = "firstname" | "lastname" | "username" | "email" | "phone" | "guardian_phone" | "address" | "postal_code" | "birthdate" | "gender";
+type ModifyUserKeys = "firstname" | "lastname" | "email" |  "guardian_phone" | "birthdate" | "gender";
 export const modifyUser = async (
     uuid: string,
     values?: Record<ModifyUserKeys, string>) => {
