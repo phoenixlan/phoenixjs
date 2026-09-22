@@ -3,7 +3,7 @@ import * as Oauth from './oauth'
 
 import {ApiGetError, AuthError, ApiPutError, ApiPatchError} from "../errors";
 
-interface MemberPersonalia {
+export interface MemberPersonalia {
 	phone: string;
 
 	address: string;

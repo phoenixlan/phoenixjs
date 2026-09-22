@@ -35,6 +35,12 @@ export type BasicUserWithSecretFields = {
 	email: string;
 } & BaseUser;
 
+export type BasicUserWithMemberPersonalia= {
+	birthdate: string;
+	email: string;
+	member_personalia: MemberPersonalia.MemberPersonalia | null;
+} & BaseUser;
+
 export type BasicUser = {
 } & BaseUser;
 
