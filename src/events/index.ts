@@ -126,6 +126,7 @@ export const getEvents = async (): Promise<Array<Event>> => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            ...(await Oauth.getAuthHeaders()),
         },
     });
 
@@ -141,7 +142,6 @@ export const getEvent = async (uuid: string): Promise<Event> => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            ...(await Oauth.getAuthHeaders()),
         },
     });
 
