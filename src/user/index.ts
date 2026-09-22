@@ -335,4 +335,4 @@ export const getFullName = (user: BasicUser) => {
 	return `${user.firstname} ${user.lastname}`
 }
 
-export { Oauth };
+export { Oauth, MemberPersonalia };
