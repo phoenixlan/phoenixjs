@@ -13,6 +13,7 @@ export interface TicketType {
     description: string | null;
     grants_membership: boolean;
     requires_membership: boolean;
+    transferable: boolean;
 }
 
 export const getTicketTypes = async () => {
@@ -39,6 +40,7 @@ export interface NewTicketType {
     grants_admission: boolean;
     requires_membership?: boolean;
     grants_membership?: boolean;
+    transferable?: boolean;
 }
 
 export const createTicketType = async (event_brand_uuid: string, ticketType: NewTicketType) => {
