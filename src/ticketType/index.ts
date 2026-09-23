@@ -37,6 +37,8 @@ export interface NewTicketType {
     refundable: boolean;
     seatable: boolean;
     grants_admission: boolean;
+    requires_membership?: boolean;
+    grants_membership?: boolean;
 }
 
 export const createTicketType = async (event_brand_uuid: string, ticketType: NewTicketType) => {
