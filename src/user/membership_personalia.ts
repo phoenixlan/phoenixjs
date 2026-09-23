@@ -3,7 +3,7 @@ import * as Oauth from './oauth'
 
 import {ApiGetError, AuthError, ApiPutError, ApiPatchError} from "../errors";
 
-export interface MemberPersonalia {
+export interface MembershipPersonalia {
 	phone: string;
 
 	address: string;
@@ -12,8 +12,8 @@ export interface MemberPersonalia {
 }
 
 
-export const getMemberPersonalia = async (user_uuid: string): Promise<MemberPersonalia|null> => {
-	const response = await fetch(`${getApiServer()}/user/${user_uuid}/member_personalia`, {
+export const getMembershipPersonalia = async (user_uuid: string): Promise<MembershipPersonalia|null> => {
+	const response = await fetch(`${getApiServer()}/user/${user_uuid}/membership_personalia`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -26,14 +26,14 @@ export const getMemberPersonalia = async (user_uuid: string): Promise<MemberPers
 	}
 
 	if (!response.ok) {
-		throw new ApiGetError("Unable to get the user's member personalia");
+		throw new ApiGetError("Unable to get the user's membership personalia");
 	}
 
-	return (await response.json()) as MemberPersonalia;
+	return (await response.json()) as MembershipPersonalia;
 };
 
-export const upsertMemberPersonalia = async (user_uuid: string, phone: string, address: string, postal_code: string): Promise<MemberPersonalia> => {
-    const response = await fetch(`${getApiServer()}/user/${user_uuid}/member_personalia`, {
+export const upsertMembershipPersonalia = async (user_uuid: string, phone: string, address: string, postal_code: string): Promise<MembershipPersonalia> => {
+    const response = await fetch(`${getApiServer()}/user/${user_uuid}/membership_personalia`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -51,11 +51,11 @@ export const upsertMemberPersonalia = async (user_uuid: string, phone: string, a
         try {
             error = (await response.json())['error']
         } catch (e) {
-            throw new ApiPutError('Unable upsert member personalia');
+            throw new ApiPutError('Unable upsert membership personalia');
         }
 
         throw new ApiPutError(error);
     }
 
-    return (await response.json()) as MemberPersonalia;
+    return (await response.json()) as MembershipPersonalia;
 }

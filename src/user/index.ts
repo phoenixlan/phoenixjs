@@ -1,5 +1,5 @@
 import * as Oauth from './oauth'
-import * as MemberPersonalia from './member_personalia'
+import * as MembershipPersonalia from './membership_personalia'
 
 
 import { getApiServer } from '../meta/api';
@@ -35,10 +35,10 @@ export type BasicUserWithSecretFields = {
 	email: string;
 } & BaseUser;
 
-export type BasicUserWithMemberPersonalia= {
+export type BasicUserWithMembershipPersonalia= {
 	birthdate: string;
 	email: string;
-	member_personalia: MemberPersonalia.MemberPersonalia | null;
+	membership_personalia: MembershipPersonalia.MembershipPersonalia | null;
 } & BaseUser;
 
 export type BasicUser = {
@@ -341,4 +341,4 @@ export const getFullName = (user: BasicUser) => {
 	return `${user.firstname} ${user.lastname}`
 }
 
-export { Oauth, MemberPersonalia };
+export { Oauth, MembershipPersonalia };
