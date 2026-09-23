@@ -33,6 +33,7 @@ export interface BaseUser {
 export type BasicUserWithSecretFields = {
 	birthdate: string;
 	email: string;
+	phone: string;
 } & BaseUser;
 
 export type BasicUserWithMembershipPersonalia= {
@@ -50,6 +51,7 @@ export type BasicUserWithPositionMappings = {
 
 export type FullUser = {
 	birthdate: string;
+	phone: string;
 	tos_level: number;
 	position_mappings: Array<PositionFacingPositionMapping>;
 	avatar_uuid?: string;
@@ -210,7 +212,7 @@ export const getUser = async (uuid: string) => {
 	return await response.json() as FullUser;
 }
 
-type ModifyUserKeys = "firstname" | "lastname" | "email" |  "guardian_phone" | "birthdate" | "gender";
+type ModifyUserKeys = "firstname" | "lastname" | "email" | "phone" | "guardian_phone" | "birthdate" | "gender";
 export const modifyUser = async (
     uuid: string,
     values?: Record<ModifyUserKeys, string>) => {

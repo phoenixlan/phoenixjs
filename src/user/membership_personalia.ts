@@ -4,8 +4,6 @@ import * as Oauth from './oauth'
 import {ApiGetError, AuthError, ApiPutError, ApiPatchError} from "../errors";
 
 export interface MembershipPersonalia {
-	phone: string;
-
 	address: string;
 	postal_code: string;
 	country_code: string;
@@ -32,7 +30,7 @@ export const getMembershipPersonalia = async (user_uuid: string): Promise<Member
 	return (await response.json()) as MembershipPersonalia;
 };
 
-export const upsertMembershipPersonalia = async (user_uuid: string, phone: string, address: string, postal_code: string): Promise<MembershipPersonalia> => {
+export const upsertMembershipPersonalia = async (user_uuid: string, address: string, postal_code: string): Promise<MembershipPersonalia> => {
     const response = await fetch(`${getApiServer()}/user/${user_uuid}/membership_personalia`, {
         method: 'PUT',
         headers: {
@@ -40,7 +38,6 @@ export const upsertMembershipPersonalia = async (user_uuid: string, phone: strin
             ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
-					phone,
 					address,
 					postal_code
         })
