@@ -58,7 +58,15 @@ export const createStoreSession = async (event_uuid: string, data: Cart) => {
     });
 
     if(response.status !== 200) {
-        throw new ApiPutError("Unable to create store session");
+        // The error explains why, e.g. there not being enough tickets available
+        let error = ""
+        try {
+            error = (await response.json())['error']
+        } catch (e) {
+            throw new ApiPutError("Unable to create store session");
+        }
+
+        throw new ApiPutError(error);
     }
 
     return await response.json() as StoreSession;
