@@ -32,8 +32,8 @@ export interface StoreSession {
     uuid: string,
 }
 
-export const getActiveStoreSessions = async () => {
-    const response = await fetch(`${getApiServer()}/store_session/active`, {
+export const getActiveStoreSessions = async (event_uuid: string) => {
+    const response = await fetch(`${getApiServer()}/event/${event_uuid}/store_session/active`, {
         method: 'GET',
         headers: {
             ...(await Oauth.getAuthHeaders()),
