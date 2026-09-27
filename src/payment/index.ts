@@ -15,7 +15,7 @@ export type VippsPayment = {
     url: string,
 }
 
-export type VisaPayment = {
+export type StripePayment = {
     client_secret: string,
 }
 
@@ -75,9 +75,9 @@ export const initiateVippsPayment = async (paymentUuid: string, fallbackUrl: str
     return payment as unknown as VippsPayment;
 }
 
-export const initiateVisaPayment = async (paymentUuid: string) => {
+export const initiateStripePayment = async (paymentUuid: string) => {
     const payment = initiatePayment(paymentUuid);
-    return payment as unknown as VisaPayment;
+    return payment as unknown as StripePayment;
 }
 
 // Free payments have nothing to pay, so initiating one mints the tickets right away
