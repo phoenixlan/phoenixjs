@@ -21,6 +21,7 @@ export interface Event {
     start_time: number;
     theme: null | string;
     uuid: string;
+    announced: boolean;
 }
 
 export interface TicketTypeAvailability {
@@ -79,6 +80,8 @@ export interface NewEvent {
     theme?: string;
     location_uuid?: string;
     seatmap_uuid?: string;
+    // Defaults to true
+    announced?: boolean;
 }
 
 export interface EventChanges {
@@ -94,6 +97,7 @@ export interface EventChanges {
     theme?: string | null;
     cancellation_reason?: string | null;
     seatmap_uuid?: string | null;
+    announced?: boolean;
 }
 
 
