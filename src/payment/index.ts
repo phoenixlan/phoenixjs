@@ -31,14 +31,13 @@ export interface PaymentInfo {
 }
 
 export const createPayment = async (store_session: string, provider: string) => {
-    const response = await fetch(`${getApiServer()}/payment`, {
+    const response = await fetch(`${getApiServer()}/store_session/${store_session}/payment`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             ...(await Oauth.getAuthHeaders()),
         },
         body: JSON.stringify({
-            store_session,
             provider,
         })
     });
@@ -79,6 +78,12 @@ export const initiateVippsPayment = async (paymentUuid: string, fallbackUrl: str
 export const initiateVisaPayment = async (paymentUuid: string) => {
     const payment = initiatePayment(paymentUuid);
     return payment as unknown as VisaPayment;
+}
+
+// Free payments have nothing to pay, so initiating one mints the tickets right away
+export const initiateFreePayment = async (paymentUuid: string) => {
+    const payment = initiatePayment(paymentUuid);
+    return payment as unknown as PaymentInfo;
 }
 
 export const poll = async (uuid: string) => {
