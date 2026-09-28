@@ -31,6 +31,21 @@ export const getTicketTypes = async () => {
     return (await response.json()) as Array<TicketType>;
 }
 
+export const getEventBrandTicketTypes = async (event_brand_uuid: string) => {
+    const response = await fetch(`${getApiServer()}/event_brand/${event_brand_uuid}/ticket_type`, {
+        method: 'GET',
+        headers: {
+            ...(await Oauth.getAuthHeaders()),
+        },
+    });
+
+    if (!response.ok) {
+        throw new ApiGetError('Unable to get ticket types for event brand');
+    }
+
+    return (await response.json()) as Array<TicketType>;
+}
+
 export interface NewTicketType {
     name: string;
     price: number;
