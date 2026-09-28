@@ -11,6 +11,7 @@ export interface TicketType {
     seatable: boolean;
     grants_admission: boolean;
     description: string | null;
+    disclaimer: string | null;
     grants_membership: boolean;
     requires_membership: boolean;
     transferable: boolean;
@@ -50,6 +51,7 @@ export interface NewTicketType {
     name: string;
     price: number;
     description: string;
+    disclaimer?: string | null;
     refundable: boolean;
     seatable: boolean;
     grants_admission: boolean;
