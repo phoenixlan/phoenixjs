@@ -85,3 +85,19 @@ export const getAllTicketVouchers = async (): Promise<Array<BasicTicketVoucher>>
 
 	return (await response.json()) as Array<BasicTicketVoucher>;
 };
+
+export const getEventBrandTicketVouchers = async (event_brand_uuid: string): Promise<Array<BasicTicketVoucher>> => {
+	const response = await fetch(`${getApiServer()}/event_brand/${event_brand_uuid}/ticket_voucher`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			...(await Oauth.getAuthHeaders())
+		},
+	});
+
+	if (response.status !== 200) {
+		throw new ApiGetError("Unable to get ticket vouchers for event brand");
+	}
+
+	return (await response.json()) as Array<BasicTicketVoucher>;
+};
