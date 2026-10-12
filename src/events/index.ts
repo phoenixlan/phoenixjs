@@ -164,8 +164,8 @@ export const updateEvent = async (uuid: string, changes: EventChanges): Promise<
     return (await response.json()) as Event;
 };
 
-export const getEvents = async (): Promise<Array<Event>> => {
-    const response = await fetch(`${getApiServer()}/event/`, {
+export const getEvents = async (event_brand_uuid: string): Promise<Array<Event>> => {
+    const response = await fetch(`${getApiServer()}/event_brand/${event_brand_uuid}/event/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
