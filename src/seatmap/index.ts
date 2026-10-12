@@ -80,8 +80,8 @@ export const getSeatmapAvailability = async (uuid: string, event_uuid: string) =
     return (await response.json()) as SeatmapAvailability;
 }
 
-export const getSeatmaps = async () => {
-    const response = await fetch(`${getApiServer()}/seatmap/`, {
+export const getSeatmaps = async (event_brand_uuid: string) => {
+    const response = await fetch(`${getApiServer()}/brand/${event_brand_uuid}/seatmap/`, {
         method: 'GET',
         headers: {
             ...(await Oauth.getAuthHeaders()),
