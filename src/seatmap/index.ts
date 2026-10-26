@@ -31,7 +31,7 @@ export type SeatmapAvailability = {
 } & SeatmapBase;
 
 export const createSeatmap = async (event_brand_uuid: string, name: string, description: string) => {
-    const response = await fetch(`${getApiServer()}/seatmap`, {
+    const response = await fetch(`${getApiServer()}/event_brand/${event_brand_uuid}/seatmap`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -39,8 +39,7 @@ export const createSeatmap = async (event_brand_uuid: string, name: string, desc
         },
         body: JSON.stringify({
             name,
-            description,
-            event_brand_uuid
+            description
         })
     });
 
@@ -80,8 +79,8 @@ export const getSeatmapAvailability = async (uuid: string, event_uuid: string) =
     return (await response.json()) as SeatmapAvailability;
 }
 
-export const getSeatmaps = async () => {
-    const response = await fetch(`${getApiServer()}/seatmap/`, {
+export const getSeatmaps = async (event_brand_uuid: string) => {
+    const response = await fetch(`${getApiServer()}/event_brand/${event_brand_uuid}/seatmap/`, {
         method: 'GET',
         headers: {
             ...(await Oauth.getAuthHeaders()),
