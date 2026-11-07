@@ -6,7 +6,7 @@
 import {getApiServer} from "../meta";
 import * as Oauth from "../user/oauth";
 import {ApiGetError, ApiPostError} from "../errors";
-import { BasicTicket } from '../ticket';
+import { FullTicket } from '../ticket';
 
 export * from './storeSession';
 
@@ -28,7 +28,7 @@ export interface PaymentInfo {
     store_session_uuid: string,
     user_uuid: string,
     uuid: string,
-    tickets: Array<BasicTicket>
+    tickets: Array<FullTicket>
 }
 
 export const createPayment = async (store_session: string, provider: string) => {

@@ -11,6 +11,7 @@ import { BasicPosition } from '../position';
 import { PositionFacingPositionMapping } from '../position_mapping';
 import { BasicTicketVoucher } from '../ticketVoucher';
 import { Friendship } from '../friend_request';
+import { PaymentInfo } from '../payment';
 
 interface UserConsent {
 	consent_type: string;
@@ -115,6 +116,22 @@ export const getPurchasedTickets = async (uuid: string): Promise<Array<FullTicke
 	}
 
 	return (await response.json()) as Array<FullTicket>;
+};
+
+export const getPayments = async (uuid: string): Promise<Array<PaymentInfo>> => {
+	const response = await fetch(`${getApiServer()}/user/${uuid}/payments`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			...(await Oauth.getAuthHeaders())
+		},
+	});
+
+	if (!response.ok) {
+		throw new ApiGetError("Unable to get the user's payments");
+	}
+
+	return (await response.json()) as Array<PaymentInfo>;
 };
 
 export const getTicketVouchers = async (uuid: string): Promise<Array<BasicTicketVoucher>> => {
