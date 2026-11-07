@@ -22,6 +22,7 @@ export type StripePayment = {
 export interface PaymentInfo {
     created: number,
     price: number,
+    refunded_amount: number,
     provider: string,
     state: string,
     store_session_uuid: string,
@@ -84,6 +85,34 @@ export const initiateStripePayment = async (paymentUuid: string) => {
 export const initiateFreePayment = async (paymentUuid: string) => {
     const payment = initiatePayment(paymentUuid);
     return payment as unknown as PaymentInfo;
+}
+
+// Refunds the given tickets. Refunding every remaining ticket of a payment refunds it in full.
+// Tickets that are checked in, non-refundable, created from a voucher or no longer owned by the buyer can't be refunded.
+export const refundPayment = async (paymentUuid: string, ticketIds: Array<number>): Promise<PaymentInfo> => {
+    const response = await fetch(`${getApiServer()}/payment/${paymentUuid}/refund`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            ...(await Oauth.getAuthHeaders()),
+        },
+        body: JSON.stringify({
+            tickets: ticketIds,
+        })
+    });
+
+    if (!response.ok) {
+        let error = ""
+        try {
+            error = (await response.json())['error']
+        } catch (e) {
+            throw new ApiPostError('Unable to refund payment');
+        }
+
+        throw new ApiPostError(error);
+    }
+
+    return (await response.json()) as PaymentInfo;
 }
 
 export const poll = async (uuid: string) => {
