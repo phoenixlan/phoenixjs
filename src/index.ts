@@ -3,6 +3,7 @@ export * from './meta';
 export * from './events';
 export * as EventBrand from './eventBrand';
 export * as Crew from './crew';
+export * as CardOrder from './card_order';
 export * from './errors';
 export * as Avatar from './avatar';
 export * from './tos';
